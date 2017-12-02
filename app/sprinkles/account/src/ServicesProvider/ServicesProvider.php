@@ -341,14 +341,14 @@ class ServicesProvider
              * This method is invoked when a user attempts to perform certain public actions when they are already logged in.
              *
              * @todo Forward to user's landing page or last visited page
-             * @param \Psr\Http\Message\ServerRequestInterface $request  
-             * @param \Psr\Http\Message\ResponseInterface      $response 
+             * @param \Psr\Http\Message\ServerRequestInterface $request
+             * @param \Psr\Http\Message\ResponseInterface      $response
              * @param array $args
              * @return \Psr\Http\Message\ResponseInterface
              */
             return function (Request $request, Response $response, array $args) use ($c) {
                 $redirect = $c->router->pathFor('dashboard');
-        
+
                 return $response->withRedirect($redirect, 302);
             };
         };
@@ -361,8 +361,8 @@ class ServicesProvider
              * This method is invoked when a user completes the login process.
              *
              * Returns a callback that handles setting the `UF-Redirect` header after a successful login.
-             * @param \Psr\Http\Message\ServerRequestInterface $request  
-             * @param \Psr\Http\Message\ResponseInterface      $response 
+             * @param \Psr\Http\Message\ServerRequestInterface $request
+             * @param \Psr\Http\Message\ResponseInterface      $response
              * @param array $args
              * @return \Psr\Http\Message\ResponseInterface
              */
@@ -370,7 +370,7 @@ class ServicesProvider
                 // Backwards compatibility for the deprecated determineRedirectOnLogin service
                 if ($c->has('determineRedirectOnLogin')) {
                     $determineRedirectOnLogin = $c->determineRedirectOnLogin;
-            
+
                     return $determineRedirectOnLogin($response)->withStatus(200);
                 }
 
