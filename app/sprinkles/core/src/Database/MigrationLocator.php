@@ -10,6 +10,7 @@ namespace UserFrosting\Sprinkle\Core\Database;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use UserFrosting\System\Sprinkle\SprinkleManager;
+use UserFrosting\Sprinkle\Core\Database\MigrationLocatorInterface;
 
 /**
  * MigrationLocator Class
@@ -18,7 +19,7 @@ use UserFrosting\System\Sprinkle\SprinkleManager;
  *
  * @author Louis Charette
  */
-class MigrationLocator
+class MigrationLocator implements MigrationLocatorInterface
 {
     /**
      * @var SprinkleManager The Sprinkle manager service
