@@ -46,6 +46,9 @@ use UserFrosting\Sprinkle\Core\Log\MixedFormatter;
 use UserFrosting\Sprinkle\Core\Mail\Mailer;
 use UserFrosting\Sprinkle\Core\Alert\CacheAlertStream;
 use UserFrosting\Sprinkle\Core\Alert\SessionAlertStream;
+use UserFrosting\Sprinkle\Core\Database\Migrator;
+use UserFrosting\Sprinkle\Core\Database\MigrationLocator;
+use UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository;
 use UserFrosting\Sprinkle\Core\Router;
 use UserFrosting\Sprinkle\Core\Throttle\Throttler;
 use UserFrosting\Sprinkle\Core\Throttle\ThrottleRule;
@@ -445,6 +448,19 @@ class ServicesProvider
             $log->pushHandler($handler);
 
             return $log;
+        };
+
+        /**
+         * Migrator service.
+         *
+         * This service handles database migration operations
+         */
+        $container['migrator'] = function ($c) {
+            return new Migrator(
+                new DatabaseMigrationRepository($c->db->getDatabaseManager(), 'migrations'), //<- Put the table in a config \TODO
+                $c->db->getConnection()->getSchemaBuilder(),
+                new MigrationLocator($c->sprinkleManager, new Filesystem)
+            );
         };
 
         /**
