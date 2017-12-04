@@ -231,7 +231,7 @@ class Migrator
     /**
      *    Rollback the given migrations.
      *
-     *    @param  array $migrations An array of migrations to rollback
+     *    @param  array $migrations An array of migrations to rollback formated as an eloquent collection
      *    @param  array $options The options for the current operation
      *    @return array The list of rolledback migration classes
      */
@@ -421,7 +421,7 @@ class Migrator
      * @param  string  $name
      * @return void
      */
-    public function setConnection($name)
+    /*public function setConnection($name)
     {
         if (! is_null($name)) {
             $this->resolver->setDefaultConnection($name);
@@ -430,7 +430,7 @@ class Migrator
         $this->repository->setSource($name);
 
         $this->connection = $name;
-    }
+    }*/
 
     /**
      * Resolve the database connection instance.
@@ -438,10 +438,10 @@ class Migrator
      * @param  string  $connection
      * @return \Illuminate\Database\Connection
      */
-    public function resolveConnection($connection)
+    /*public function resolveConnection($connection)
     {
         return $this->resolver->connection($connection ?: $this->connection);
-    }
+    }*/
 
     /**
      * Get the schema grammar out of a migration connection.
@@ -449,7 +449,7 @@ class Migrator
      * @param  \Illuminate\Database\Connection  $connection
      * @return \Illuminate\Database\Schema\Grammars\Grammar
      */
-    protected function getSchemaGrammar($connection)
+    /*protected function getSchemaGrammar($connection)
     {
         if (is_null($grammar = $connection->getSchemaGrammar())) {
             $connection->useDefaultSchemaGrammar();
@@ -458,7 +458,7 @@ class Migrator
         }
 
         return $grammar;
-    }
+    }*/
 
     /**
      *    Get the migration repository instance.

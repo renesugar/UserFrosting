@@ -7,7 +7,6 @@
  */
 namespace UserFrosting\Sprinkle\Core\Database;
 
-use Illuminate\Database\ConnectionResolverInterface as Resolver;
 use Illuminate\Database\Migrations\DatabaseMigrationRepository as Repository;
 
 /**
@@ -19,6 +18,20 @@ use Illuminate\Database\Migrations\DatabaseMigrationRepository as Repository;
  */
 class DatabaseMigrationRepository extends Repository
 {
+    /**
+     * Log that a migration was run.
+     *
+     * @param  string  $file
+     * @param  int  $batch
+     * @return void
+     */
+    public function log($file, $batch, $sprinkle = "")
+    {
+        $record = ['migration' => $file, 'batch' => $batch, 'sprinkle' => $sprinkle];
+
+        $this->table()->insert($record);
+    }
+
     /**
      * Create the migration repository data store.
      *

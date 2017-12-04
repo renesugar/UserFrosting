@@ -59,7 +59,7 @@ class MigrationRepositoryTest extends TestCase
         $connectionMock = m::mock('Illuminate\Database\Connection');
         $repo->getConnectionResolver()->shouldReceive('connection')->with(null)->andReturn($connectionMock);
         $repo->getConnection()->shouldReceive('table')->once()->with('migrations')->andReturn($query);
-        $query->shouldReceive('insert')->once()->with(['migration' => 'bar', 'batch' => 1]);
+        $query->shouldReceive('insert')->once()->with(['migration' => 'bar', 'batch' => 1, 'sprinkle' => '']);
         $query->shouldReceive('useWritePdo')->once()->andReturn($query);
 
         $repo->log('bar', 1);
