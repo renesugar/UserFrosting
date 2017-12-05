@@ -456,9 +456,11 @@ class ServicesProvider
          * This service handles database migration operations
          */
         $container['migrator'] = function ($c) {
+            $schemaBuilder = $c->db->getConnection()->getSchemaBuilder();
+
             return new Migrator(
-                new DatabaseMigrationRepository($c->db->getDatabaseManager(), 'migrations'), //<- Put the table in a config \TODO
-                $c->db->getConnection()->getSchemaBuilder(),
+                new DatabaseMigrationRepository($schemaBuilder, 'migrations'), //<- Put the table in a config \TODO
+                $schemaBuilder,
                 new MigrationLocator($c->sprinkleManager, new Filesystem)
             );
         };

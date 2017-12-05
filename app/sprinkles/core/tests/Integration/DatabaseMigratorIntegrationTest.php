@@ -43,8 +43,7 @@ class DatabaseMigratorIntegrationTest extends TestCase
         $this->schema = $db->connection($this->schemaName)->getSchemaBuilder();
 
         // Get the repository instance. Set the correct database
-        $repository = new DatabaseMigrationRepository($db->getDatabaseManager(), $this->migrationTable);
-        $repository->setSource($this->schemaName);
+        $repository = new DatabaseMigrationRepository($this->schema, $this->migrationTable);
 
         // Get the Locator
         $this->locator = new MigrationLocatorStub($this->ci->sprinkleManager, new Filesystem);
