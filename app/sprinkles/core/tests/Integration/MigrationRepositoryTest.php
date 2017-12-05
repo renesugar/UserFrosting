@@ -30,9 +30,7 @@ class MigrationRepositoryTest extends TestCase
         $repo->getConnection()->shouldReceive('table')->once()->with('migrations')->andReturn($query);
 
         // When getRan is called, the $connectionMock should be orderedBy batch, then migration and pluck.
-        $query->shouldReceive('orderBy')->once()->with('batch', 'asc')->andReturn($query);
-        $query->shouldReceive('orderBy')->once()->with('migration', 'asc')->andReturn($query);
-        $query->shouldReceive('pluck')->once()->with('migration')->andReturn(new Collection(['bar']));
+        $query->shouldReceive('orderBy')->once()->with('id', 'asc')->andReturn(new Collection([['migration' => 'bar']]));
 
         $this->assertEquals(['bar'], $repo->getRan());
     }
@@ -52,8 +50,8 @@ class MigrationRepositoryTest extends TestCase
 
         // Table should be asked to search for batch 1, orderBy migration and return the foo migration
         $query->shouldReceive('where')->once()->with('batch', 1)->andReturn($query);
-        $query->shouldReceive('orderBy')->once()->with('migration', 'desc')->andReturn($query);
-        $query->shouldReceive('get')->once()->andReturn(new Collection(['foo']));
+        $query->shouldReceive('orderBy')->once()->with('id', 'desc')->andReturn($query);
+        $query->shouldReceive('get')->once()->andReturn(new Collection([['migration' => 'foo']]));
 
         $this->assertEquals(['foo'], $repo->getLast());
     }

@@ -49,13 +49,12 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
     /**
      * Get the ran migrations.
      *
-     * @return array An array of migration class names
+     * @return array An array of migration class names in the order they where ran
      */
     public function getRan()
     {
         return $this->table()
-                ->orderBy('batch', 'asc')
-                ->orderBy('migration', 'asc')
+                ->orderBy('id', 'asc')
                 ->pluck('migration')->all();
     }
 
@@ -69,11 +68,11 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
     {
         $query = $this->table()->where('batch', '>=', '1');
 
-        return $query->orderBy('migration', 'desc')->take($steps)->get()->all();
+        return $query->orderBy('id', 'desc')->take($steps)->get()->pluck('migration')->all();
     }
 
     /**
-     * Get the last migration batch.
+     * Get the last migration batch in reserve order they were ran (last one first)
      *
      * @return array
      */
@@ -81,7 +80,7 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
     {
         $query = $this->table()->where('batch', $this->getLastBatchNumber());
 
-        return $query->orderBy('migration', 'desc')->get()->all();
+        return $query->orderBy('id', 'desc')->get()->pluck('migration')->all();
     }
 
     /**
@@ -145,7 +144,6 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
             $table->string('sprinkle');
             $table->string('migration');
             $table->integer('batch');
-            $table->timestamps();
         });
     }
 

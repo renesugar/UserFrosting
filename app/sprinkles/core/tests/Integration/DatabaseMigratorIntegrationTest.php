@@ -26,6 +26,8 @@ class DatabaseMigratorIntegrationTest extends TestCase
 
     protected $locator;
 
+    protected $repository;
+
     /**
      * Bootstrap Eloquent.
      *
@@ -43,16 +45,16 @@ class DatabaseMigratorIntegrationTest extends TestCase
         $this->schema = $db->connection($this->schemaName)->getSchemaBuilder();
 
         // Get the repository instance. Set the correct database
-        $repository = new DatabaseMigrationRepository($this->schema, $this->migrationTable);
+        $this->repository = new DatabaseMigrationRepository($this->schema, $this->migrationTable);
 
         // Get the Locator
         $this->locator = new MigrationLocatorStub($this->ci->sprinkleManager, new Filesystem);
 
         // Get the migrator instance
-        $this->migrator = new Migrator($repository, $this->schema, $this->locator);
+        $this->migrator = new Migrator($this->repository, $this->schema, $this->locator);
 
-        if (!$repository->repositoryExists()) {
-            $repository->createRepository();
+        if (!$this->repository->repositoryExists()) {
+            $this->repository->createRepository();
         }
     }
 
@@ -76,19 +78,33 @@ class DatabaseMigratorIntegrationTest extends TestCase
         $this->assertEquals($this->locator->getMigrations(), $ran);
     }
 
-    /*public function testMigrationsCanBeRolledBack()
+    public function testRepository()
+    {
+        $ran = $this->migrator->run();
+
+        // Theses assertions makes sure the repository and the migration returns the same format
+        // N.B.: getLast return the migrations in reverse order (last ran first)
+        $this->assertEquals($this->locator->getMigrations(), $ran);
+        $this->assertEquals(array_reverse($this->locator->getMigrations()), $this->repository->getLast());
+        $this->assertEquals($this->locator->getMigrations(), $this->repository->getRan());
+    }
+
+    public function testMigrationsCanBeRolledBack()
     {
         // Run up
         $this->migrator->run();
         $this->assertTrue($this->schema->hasTable('users'));
         $this->assertTrue($this->schema->hasTable('password_resets'));
 
-        $rolledBack = $this->migrator->rollback(); <-- Doesn't work so far !
+        $rolledBack = $this->migrator->rollback();
         $this->assertFalse($this->schema->hasTable('users'));
         $this->assertFalse($this->schema->hasTable('password_resets'));
 
-        $this->assertEquals($this->locator->getMigrations(), $rolledBack);
-    }*/
+        // Make sure the data returned from migrator is accurate.
+        // N.B.: The order returned by the rollback method is ordered by which
+        // migration was rollbacked first (reversed from the order they where ran up)
+        $this->assertEquals(array_reverse($this->locator->getMigrations()), $rolledBack);
+    }
 
     /*public function testMigrationsCanBeReset()
     {
