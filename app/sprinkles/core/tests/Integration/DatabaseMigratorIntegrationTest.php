@@ -140,6 +140,28 @@ class DatabaseMigratorIntegrationTest extends TestCase
         $this->migrator->rollback();
     }
 
+    public function testPretendUp()
+    {
+        $result = $this->migrator->run(['pretend' => true]);
+        $notes = $this->migrator->getNotes();
+        $this->assertFalse($this->schema->hasTable('users'));
+        $this->assertFalse($this->schema->hasTable('password_resets'));
+        $this->assertNotEquals([], $notes);
+    }
+
+    public function testPretendRollback()
+    {
+        // Run up as usual
+        $result = $this->migrator->run();
+        $this->assertTrue($this->schema->hasTable('users'));
+        $this->assertTrue($this->schema->hasTable('password_resets'));
+
+        $rolledBack = $this->migrator->rollback(['pretend' => true]);
+        $this->assertTrue($this->schema->hasTable('users'));
+        $this->assertTrue($this->schema->hasTable('password_resets'));
+        $this->assertEquals(array_reverse($this->locator->getMigrations()), $rolledBack);
+    }
+
     public function testChangeRepositoryAndDeprecatedClass()
     {
         // Change the repository so we can test with the DeprecatedStub
@@ -157,7 +179,6 @@ class DatabaseMigratorIntegrationTest extends TestCase
 
     /**
      *    !TODO :
-     *    - Test pretend on up, rollback, reset
      *    - Test unfulfillable migrations
      */
 }

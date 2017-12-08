@@ -374,13 +374,7 @@ class Migrator
      */
     protected function getQueries($migration, $method)
     {
-        // Now that we have the connections we can resolve it and pretend to run the
-        // queries against the database returning the array of raw SQL statements
-        // that would get fired against the database system for this migration.
-        /*$db = $this->resolveConnection(
-            $migration->getConnection()
-        );*/
-        //!TODO : Fix me
+        // Get the schema builder db instance 
         $db = $this->schema->getConnection();
 
         return $db->pretend(function () use ($migration, $method) {
@@ -412,51 +406,6 @@ class Migrator
     }
 
     /**
-     * Set the default connection name.
-     *
-     * @param  string  $name
-     * @return void
-     */
-    /*public function setConnection($name)
-    {
-        if (! is_null($name)) {
-            $this->resolver->setDefaultConnection($name);
-        }
-
-        $this->repository->setSource($name);
-
-        $this->connection = $name;
-    }*/
-
-    /**
-     * Resolve the database connection instance.
-     *
-     * @param  string  $connection
-     * @return \Illuminate\Database\Connection
-     */
-    /*public function resolveConnection($connection)
-    {
-        return $this->resolver->connection($connection ?: $this->connection);
-    }*/
-
-    /**
-     * Get the schema grammar out of a migration connection.
-     *
-     * @param  \Illuminate\Database\Connection  $connection
-     * @return \Illuminate\Database\Schema\Grammars\Grammar
-     */
-    /*protected function getSchemaGrammar($connection)
-    {
-        if (is_null($grammar = $connection->getSchemaGrammar())) {
-            $connection->useDefaultSchemaGrammar();
-
-            $grammar = $connection->getSchemaGrammar();
-        }
-
-        return $grammar;
-    }*/
-
-    /**
      *    Get the migration repository instance.
      *
      *    @return \Illuminate\Database\Migrations\MigrationRepositoryInterface
@@ -469,7 +418,7 @@ class Migrator
     /**
      *    Set the migration repository instance
      *
-     *    @param MigrationRepositoryInterface $repository 
+     *    @param MigrationRepositoryInterface $repository
      */
     public function setRepository(MigrationRepositoryInterface $repository)
     {
