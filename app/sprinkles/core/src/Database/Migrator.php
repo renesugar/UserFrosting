@@ -21,7 +21,7 @@ use UserFrosting\Sprinkle\Core\Database\MigrationRepositoryInterface;
 class Migrator
 {
     /**
-     * @var MigrationLocatorInterface The migration repository implementation.
+     * @var MigrationRepositoryInterface The migration repository implementation.
      */
     protected $repository;
 
@@ -467,6 +467,16 @@ class Migrator
     }
 
     /**
+     *    Set the migration repository instance
+     *
+     *    @param MigrationRepositoryInterface $repository 
+     */
+    public function setRepository(MigrationRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    /**
      *    Determine if the migration repository exists.
      *
      *    @return bool If the repository exist
@@ -477,13 +487,23 @@ class Migrator
     }
 
     /**
-     *    Get the file system instance.
+     *    Get the migration locator instance.
      *
      *    @return \UserFrosting\Sprinkle\Core\Database\MigrationLocatorInterface
      */
     public function getLocator()
     {
         return $this->locator;
+    }
+
+    /**
+     *    Set the migration locator instance
+     *
+     *    @param MigrationLocatorInterface $locator
+     */
+    public function setLocator(MigrationLocatorInterface $locator)
+    {
+        $this->locator = $locator;
     }
 
     /**

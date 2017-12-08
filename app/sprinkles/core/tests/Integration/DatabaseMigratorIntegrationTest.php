@@ -140,6 +140,21 @@ class DatabaseMigratorIntegrationTest extends TestCase
         $this->migrator->rollback();
     }
 
+    public function testChangeRepositoryAndDeprecatedClass()
+    {
+        // Change the repository so we can test with the DeprecatedStub
+        $locator = new DeprecatedMigrationLocatorStub($this->ci->sprinkleManager, new Filesystem);
+        $this->migrator->setLocator($locator);
+
+        // Run up
+        $this->migrator->run();
+        $this->assertTrue($this->schema->hasTable('deprecated_table'));
+
+        // Rollback
+        $this->migrator->rollback();
+        $this->assertFalse($this->schema->hasTable('deprecated_table'));
+    }
+
     /**
      *    !TODO :
      *    - Test pretend on up, rollback, reset
@@ -153,6 +168,18 @@ class MigrationLocatorStub extends MigrationLocator {
         return [
             '\\UserFrosting\\Tests\\Integration\\Migrations\\one\\CreateUsersTable',
             '\\UserFrosting\\Tests\\Integration\\Migrations\\one\\CreatePasswordResetsTable'
+        ];
+    }
+}
+/**
+ *    This stub contain migration which order they need to be run is different
+ *    than the order the file are returned because of dependencies management
+ */
+class DeprecatedMigrationLocatorStub extends MigrationLocator {
+    public function getMigrations()
+    {
+        return [
+            '\\UserFrosting\\Tests\\Integration\\Migrations\\DeprecatedClassTable'
         ];
     }
 }

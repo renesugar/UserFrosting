@@ -8,57 +8,29 @@
 namespace UserFrosting\System\Bakery;
 
 use Illuminate\Database\Schema\Builder;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use UserFrosting\Sprinkle\Core\Database\Migration as NewMigration;
+use UserFrosting\Sprinkle\Core\Facades\Debug;
 
 /**
  * Abstract Migration class.
  *
  * @abstract
+ * @deprecated since 4.2.0 Use `UserFrosting\Sprinkle\Core\Database\Migration` instead
  * @author Alex Weissman (https://alexanderweissman.com)
  */
-abstract class Migration
+class Migration extends newMigration
 {
-    /**
-     * @var Illuminate\Database\Schema\Builder $schema
-     */
-    protected $schema;
+     /**
+      * __construct function.
+      *
+      * @access public
+      * @param Illuminate\Database\Schema\Builder $schema
+      * @return void
+      */
+     public function __construct(Builder $schema, SymfonyStyle $io = null)
+     {
+         Debug::debug("`UserFrosting\System\Bakery\Migration` has been deprecated and will be removed in future versions.  Please have your `" . static::class . "` migration extend the base `UserFrosting\Sprinkle\Core\Database\Migration` class instead.");
 
-    /**
-     * @var @Composer\IO\IOInterface
-     */
-    protected $io;
-
-    /**
-     * List of dependencies for this migration.
-     * Should return an array of class required to be run before this migration
-     */
-    public $dependencies = [];
-
-    /**
-     * __construct function.
-     *
-     * @access public
-     * @param Illuminate\Database\Schema\Builder $schema
-     * @return void
-     */
-    public function __construct(Builder $schema, SymfonyStyle $io)
-    {
-        $this->schema = $schema;
-        $this->io = $io;
-    }
-
-    /**
-     * Method to apply changes to the database
-     */
-    public function up() {}
-
-    /**
-     * Method to revert changes applied by the `up` method
-     */
-    public function down() {}
-
-    /**
-     * Method to seed new information to the database
-     */
-    public function seed() {}
+         parent::__construct($schema);
+     }
 }
