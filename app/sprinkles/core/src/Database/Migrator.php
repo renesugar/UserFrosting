@@ -7,6 +7,7 @@
  */
 namespace UserFrosting\Sprinkle\Core\Database;
 
+use Illuminate\Support\Arr;
 use Illuminate\Database\Schema\Builder;
 use UserFrosting\Sprinkle\Core\Database\MigrationLocatorInterface;
 use UserFrosting\Sprinkle\Core\Database\MigrationRepositoryInterface;
@@ -135,8 +136,8 @@ class Migrator
         $batch = $this->repository->getNextBatchNumber();
 
         // We extract a few of the options.
-        $pretend = $options['pretend'] ?? false;
-        $step = $options['step'] ?? false;
+        $pretend = Arr::get($options, 'pretend', false);
+        $step = Arr::get($options, 'step', 0);
 
         // We now have an ordered array of migrations, we will spin through them and run the
         // migrations "up" so the changes are made to the databases. We'll then log
@@ -224,7 +225,8 @@ class Migrator
      */
     protected function getMigrationsForRollback(array $options)
     {
-        if (($steps = $options['step'] ?? 0) > 0) {
+        $steps = Arr::get($options, 'step', 0);
+        if ($steps > 0) {
             return $this->repository->getMigrations($steps);
         } else {
             return $this->repository->getLast();
@@ -264,7 +266,7 @@ class Migrator
             $rolledBack[] = $migration;
 
             // Extract some options
-            $pretend = $options['pretend'] ?? false;
+            $pretend = Arr::get($options, 'pretend', false);
 
             // Run the migration down
             $this->runDown($migration, $pretend);
