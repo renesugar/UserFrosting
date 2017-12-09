@@ -59,7 +59,7 @@ class Migrator
     /**
      *    Run all the specified migrations up. Check that dependencies are met before running
      *
-     *    @param  array $options Options for the current operations
+     *    @param  array $options Options for the current operations [step, pretend]
      *    @return array The list of ran migrations
      */
     public function run(array $options = [])
@@ -171,8 +171,6 @@ class Migrator
         if ($pretend) {
             return $this->pretendToRun($migration, 'up');
         }
-
-        $this->note("<comment>Migrating:</comment> {$migrationClass}");
 
         // Run the actuall migration
         $this->runMigration($migration, 'up');

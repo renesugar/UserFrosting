@@ -47,7 +47,7 @@ class BuildAssets extends BaseCommand
         $this->io->title("UserFrosting's Assets Builder");
 
         // Set $path
-        $this->buildPath = $this->projectRoot . \UserFrosting\DS . \UserFrosting\BUILD_DIR_NAME;
+        $this->buildPath = \UserFrosting\ROOT_DIR . \UserFrosting\DS . \UserFrosting\BUILD_DIR_NAME;
 
         // Delete cached data is requested
         if ($input->getOption('force')) {

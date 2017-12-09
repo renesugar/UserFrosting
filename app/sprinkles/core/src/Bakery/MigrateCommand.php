@@ -17,7 +17,7 @@ use UserFrosting\System\Bakery\BaseCommand;
  * Migrate CLI Tools.
  * Perform database migrations commands
  *
- * @author Alex Weissman (https://alexanderweissman.com)
+ * @author Louis Charette
  */
 class MigrateCommand extends BaseCommand
 {
@@ -30,7 +30,7 @@ class MigrateCommand extends BaseCommand
              ->setDescription("Perform database migration")
              ->setHelp("This command runs all the pending database migrations.")
              ->addOption('pretend', 'p', InputOption::VALUE_NONE, 'Run migrations in "dry run" mode')
-             ->addOption('database', 'd', InputOption::VALUE_REQUIRED, 'The database connection to use');
+             ->addOption('step', 's', InputOption::VALUE_NONE, 'Force the migrations to be run so they can be rolled back individually.');
     }
 
     /**
@@ -42,20 +42,22 @@ class MigrateCommand extends BaseCommand
 
         // Get options
         $pretend = $input->getOption('pretend');
-        $database = $input->getOption('database');
+        $step = $input->getOption('step');
 
         /** @var UserFrosting\Sprinkle\Core\Database\Migrator */
         $migrator = $this->ci->migrator;
 
         // Set connection to the selected database
-        $migrator->setConnection($database);
 
-        if (! $this->migrator->repositoryExists()) {
-            $this->call(
-                'migrate:install', ['--database' => $this->option('database')]
-            );
+        // Make sure repository exist
+        if (! $migrator->repositoryExists()) {
+            $migrator->getRepository()->createRepository();
         }
 
-        $migrator->runUp($pretend, $database);
+        // Run migration
+        $migrator->run(['pretend' => $pretend, 'step' => $step]);
+
+        // Get notes and display them
+        $this->io->writeln($migrator->getNotes());
     }
 }

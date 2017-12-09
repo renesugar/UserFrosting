@@ -42,7 +42,7 @@ class Debug extends BaseCommand
         $this->io->title("UserFrosting");
         $this->io->writeln("UserFrosing version : " . \UserFrosting\VERSION);
         $this->io->writeln("OS Name : " . php_uname('s'));
-        $this->io->writeln("Project Root : {$this->projectRoot}");
+        $this->io->writeln("Project Root : " . \UserFrosting\ROOT_DIR);
 
         // Need to touch the config service first to load dotenv values
         $config = $this->ci->config;

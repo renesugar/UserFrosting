@@ -30,11 +30,6 @@ abstract class BaseCommand extends Command
     protected $io;
 
     /**
-     * @var string Path to the project root folder
-     */
-    protected $projectRoot;
-
-    /**
      * @var ContainerInterface $ci The global container object, which holds all of UserFristing services.
      */
     protected $ci;
@@ -45,7 +40,6 @@ abstract class BaseCommand extends Command
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->io = new SymfonyStyle($input, $output);
-        $this->projectRoot = \UserFrosting\ROOT_DIR;
     }
 
     /**
