@@ -459,8 +459,8 @@ class ServicesProvider
             $schemaBuilder = $c->db->getConnection()->getSchemaBuilder();
 
             return new Migrator(
+                $c->db,
                 new DatabaseMigrationRepository($schemaBuilder, 'migrations'), //<- Put the table in a config \TODO
-                $schemaBuilder,
                 new MigrationLocator($c->sprinkleManager, new Filesystem)
             );
         };

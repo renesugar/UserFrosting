@@ -19,7 +19,7 @@ class DatabaseMigratorIntegrationTest extends TestCase
     /**
      * @var string The db connection to use for the test.
      */
-    protected $schemaName = 'test_integration';
+    protected $connection = 'test_integration';
 
     /**
      * @var string The migration table name
@@ -56,20 +56,20 @@ class DatabaseMigratorIntegrationTest extends TestCase
         // Boot parent TestCase, which will set up the database and connections for us.
         parent::setUp();
 
-        // Boot database
-        $db = $this->ci->db;
-
         // Get the schema instance
-        $this->schema = $db->connection($this->schemaName)->getSchemaBuilder();
+        $schema = $this->ci->db->getConnection($this->connection)->getSchemaBuilder();
 
         // Get the repository instance. Set the correct database
-        $this->repository = new DatabaseMigrationRepository($this->schema, $this->migrationTable);
+        $this->repository = new DatabaseMigrationRepository($schema, $this->migrationTable);
 
         // Get the Locator
         $this->locator = new MigrationLocatorStub($this->ci->sprinkleManager, new Filesystem);
 
         // Get the migrator instance
-        $this->migrator = new Migrator($this->repository, $this->schema, $this->locator);
+        $this->migrator = new Migrator($this->ci->db, $this->repository, $this->locator);
+        $this->migrator->setConnection($this->connection);
+
+        $this->schema = $this->migrator->getSchemaBuilder();
 
         if (!$this->repository->repositoryExists()) {
             $this->repository->createRepository();

@@ -8,7 +8,7 @@
 namespace UserFrosting\Sprinkle\Core\Database;
 
 use Illuminate\Support\Arr;
-use Illuminate\Database\Schema\Builder;
+use Illuminate\Database\Capsule\Manager as Capsule;
 use UserFrosting\Sprinkle\Core\Database\MigrationLocatorInterface;
 use UserFrosting\Sprinkle\Core\Database\MigrationRepositoryInterface;
 use UserFrosting\Sprinkle\Core\Database\MigrationDependencyAnalyser as Analyser;
@@ -29,14 +29,19 @@ class Migrator
     protected $repository;
 
     /**
-     * @var Builder The schema builder instance
+     * @var Capsule
      */
-    protected $schema;
+    protected $db;
 
     /**
      * @var MigrationLocatorInterface The Migration locator instance
      */
     protected $locator;
+
+    /**
+     *    @var string The connection name
+     */
+    protected $connection;
 
     /**
      * @var Array The notes for the current operation.
@@ -46,14 +51,14 @@ class Migrator
     /**
      *    Constructor
      *
+     *    @param Capsule $db The database instance
      *    @param MigrationRepositoryInterface $repository The migration repository
-     *    @param Builder $schema The schema builder
      *    @param MigrationLocatorInterface $locator The Migration locator
      */
-    public function __construct(MigrationRepositoryInterface $repository, Builder $schema, MigrationLocatorInterface $locator)
+    public function __construct(Capsule $db, MigrationRepositoryInterface $repository, MigrationLocatorInterface $locator)
     {
+        $this->db = $db;
         $this->repository = $repository;
-        $this->schema = $schema;
         $this->locator = $locator;
     }
 
@@ -201,8 +206,6 @@ class Migrator
     {
         $this->notes = [];
 
-        //!TODO :: Add the sprinkle option
-
         // We want to pull in the last batch of migrations that ran on the previous
         // migration operation. We'll then reverse those migrations and run each
         // of them "down" to reverse the last migration "operation" which ran.
@@ -254,13 +257,9 @@ class Migrator
 
             // We have to make sure the class exist first
             if (!$availableMigrations->contains($migration)) {
-
-                //!TODO :: Should this throw an exception instead ?
-                $this->note("<fg=red>Migration not found:</> {$migration}");
+                //throw new \Exception("Can't rollback migrations `$migration`. The migration class doesn't exist");
                 continue;
             }
-
-            //!TODO :: Add dependency check. Not required if we rollback any data, but might be if sprinkle option is used
 
             // Add the migration to the list of rolledback migration
             $rolledBack[] = $migration;
@@ -284,8 +283,6 @@ class Migrator
     public function reset($pretend = false)
     {
         $this->notes = [];
-
-        //!TODO :: Add the sprinkle option
 
         // We get the list of all the migrations class available and reverse
         // said list so we can run them back in the correct order for resetting
@@ -383,10 +380,10 @@ class Migrator
      */
     protected function getQueries($migration, $method)
     {
-        // Get the schema builder db instance
-        $db = $this->schema->getConnection();
+        // Get the connection instance
+        $connection = $this->getConnection();
 
-        return $db->pretend(function () use ($migration, $method) {
+        return $connection->pretend(function () use ($migration, $method) {
             if (method_exists($migration, $method)) {
                 $migration->{$method}();
             }
@@ -405,7 +402,7 @@ class Migrator
             throw new BadClassNameException("Unable to find the migration class '$migrationClass'." );
         }
 
-        return new $migrationClass($this->schema);
+        return new $migrationClass($this->getSchemaBuilder());
     }
 
     /**
@@ -451,7 +448,7 @@ class Migrator
     /**
      *    Get the migration locator instance.
      *
-     *    @return \UserFrosting\Sprinkle\Core\Database\MigrationLocatorInterface
+     *    @return MigrationLocatorInterface
      */
     public function getLocator()
     {
@@ -466,6 +463,37 @@ class Migrator
     public function setLocator(MigrationLocatorInterface $locator)
     {
         $this->locator = $locator;
+    }
+
+    /**
+     *    Get the schema builder.
+     *
+     *    @return Illuminate\Database\Schema\Builder
+     */
+    public function getSchemaBuilder()
+    {
+        return $this->getConnection()->getSchemaBuilder();
+    }
+
+    /**
+     *    Return the connection instance
+     *
+     *    @return Illuminate\Database\Connection
+     */
+    public function getConnection()
+    {
+        return $this->db->getConnection($this->connection);
+    }
+
+    /**
+     *    Define which connection to use
+     *
+     *    @param string $name The connection name
+     */
+    public function setConnection($name)
+    {
+        //$this->repository->setSource($name);
+        $this->connection = $name;
     }
 
     /**

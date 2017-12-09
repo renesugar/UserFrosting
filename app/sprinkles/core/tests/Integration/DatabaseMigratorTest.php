@@ -13,7 +13,7 @@ use UserFrosting\Sprinkle\Core\Database\Migrator;
 
 /**
  *    Tests for the Migrator Class
- *    
+ *
  *    Theses tests make sure the Migrator works correctly, without validating
  *    agaist a simulated database. Those tests are performed by `DatabaseMigratorIntegrationTest`
  *
@@ -27,25 +27,62 @@ class DatabaseMigratorTest extends TestCase
     }
 
     /**
+     * @var \Illuminate\Database\Schema\Builder
+     */
+    protected $schema;
+
+    /**
+     * @var Migrator The migrator instance.
+     */
+    protected $migrator;
+
+    /**
+     * @var MigrationLocator The migration locator instance.
+     */
+    protected $locator;
+
+    /**
+     * @var DatabaseMigrationRepository The migration repository instance.
+     */
+    protected $repository;
+
+    /**
+     * Setup base mock and migrator instance.
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        // Boot parent TestCase
+        parent::setUp();
+
+        // Create mock objects
+        $this->schema = m::mock('Illuminate\Database\Schema\Builder');
+        $this->repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
+        $this->locator = m::mock('UserFrosting\Sprinkle\Core\Database\MigrationLocator');
+        $capsule = m::mock('Illuminate\Database\Capsule\Manager');
+        $connectionMock = m::mock('Illuminate\Database\Connection');
+
+        // Set global expections for $capule and $connection
+        $capsule->shouldReceive('getConnection')->andReturn($connectionMock);
+        $connectionMock->shouldReceive('getSchemaBuilder')->andReturn($this->schema);
+
+        // Setup the migrator instance
+        $this->migrator = new Migrator($capsule, $this->repository, $this->locator);
+    }
+
+    /**
      *    Basic test to make sure the base method syntaxt is ok
      */
     public function testMigratorUpWithNoMigrations()
     {
-        // Mock the migrator dependencies
-        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
-        $schemaBuilder = m::mock('Illuminate\Database\Schema\Builder');
-        $locator = m::mock('UserFrosting\Sprinkle\Core\Database\MigrationLocator');
-
-        // Build migrator
-        $migrator = new Migrator($repository, $schemaBuilder, $locator);
-
         // Locator will be asked to return the avaialble migrations
-        $locator->shouldReceive('getMigrations')->once()->andReturn([]);
+        $this->locator->shouldReceive('getMigrations')->once()->andReturn([]);
 
         // Repository will be asked to return the ran migrations
-        $repository->shouldReceive('getRan')->once()->andReturn([]);
+        $this->repository->shouldReceive('getRan')->once()->andReturn([]);
 
-        $migrations = $migrator->run();
+        $migrations = $this->migrator->run();
         $this->assertEmpty($migrations);
     }
 
@@ -54,14 +91,6 @@ class DatabaseMigratorTest extends TestCase
      */
     public function testMigratorUpWithOnlyPendingMigrations()
     {
-        // Mock the migrator dependencies
-        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
-        $schemaBuilder = m::mock('Illuminate\Database\Schema\Builder');
-        $locator = m::mock('UserFrosting\Sprinkle\Core\Database\MigrationLocator');
-
-        // Build migrator
-        $migrator = new Migrator($repository, $schemaBuilder, $locator);
-
         // The migrations set
         $testMigrations = [
             '\\UserFrosting\\Tests\\Integration\\Migrations\\one\\CreateUsersTable',
@@ -70,18 +99,18 @@ class DatabaseMigratorTest extends TestCase
         ];
 
         // When running up, Locator will return all 3 migration classes
-        $locator->shouldReceive('getMigrations')->andReturn($testMigrations);
+        $this->locator->shouldReceive('getMigrations')->andReturn($testMigrations);
 
         // Repository will be asked to return the ran migrations, the next batch number and will log 3 new migrations
-        $repository->shouldReceive('getRan')->andReturn([]);
-        $repository->shouldReceive('getNextBatchNumber')->andReturn(1);
-        $repository->shouldReceive('log')->times(3)->andReturn(null);
+        $this->repository->shouldReceive('getRan')->andReturn([]);
+        $this->repository->shouldReceive('getNextBatchNumber')->andReturn(1);
+        $this->repository->shouldReceive('log')->times(3)->andReturn(null);
 
         // SchemaBuilder will create all 3 tables
-        $schemaBuilder->shouldReceive('create')->times(3)->andReturn(null);
+        $this->schema->shouldReceive('create')->times(3)->andReturn(null);
 
         // Run migrations up
-        $migrations = $migrator->run();
+        $migrations = $this->migrator->run();
 
         // All classes should have been migrated
         $this->assertEquals($testMigrations, $migrations);
@@ -92,33 +121,25 @@ class DatabaseMigratorTest extends TestCase
      */
     public function testMigratorUpWithOneInstalledMigrations()
     {
-        // Mock the migrator dependencies
-        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
-        $schemaBuilder = m::mock('Illuminate\Database\Schema\Builder');
-        $locator = m::mock('UserFrosting\Sprinkle\Core\Database\MigrationLocator');
-
-        // Build migrator
-        $migrator = new Migrator($repository, $schemaBuilder, $locator);
-
         // When running up, Locator will return all 3 migration classes
-        $locator->shouldReceive('getMigrations')->andReturn([
+        $this->locator->shouldReceive('getMigrations')->andReturn([
             '\\UserFrosting\\Tests\\Integration\\Migrations\\one\\CreateUsersTable',
             '\\UserFrosting\\Tests\\Integration\\Migrations\\one\\CreatePasswordResetsTable',
             '\\UserFrosting\\Tests\\Integration\\Migrations\\two\\CreateFlightsTable'
         ]);
 
         // Repository will be asked to return the ran migrations (one), the next batch number and will log 2 new migrations
-        $repository->shouldReceive('getRan')->andReturn([
+        $this->repository->shouldReceive('getRan')->andReturn([
             '\\UserFrosting\\Tests\\Integration\\Migrations\\one\\CreateUsersTable'
         ]);
-        $repository->shouldReceive('getNextBatchNumber')->andReturn(2);
-        $repository->shouldReceive('log')->times(2)->andReturn(null);
+        $this->repository->shouldReceive('getNextBatchNumber')->andReturn(2);
+        $this->repository->shouldReceive('log')->times(2)->andReturn(null);
 
         // SchemaBuilder will only create 2 tables
-        $schemaBuilder->shouldReceive('create')->times(2)->andReturn(null);
+        $this->schema->shouldReceive('create')->times(2)->andReturn(null);
 
         // Run migrations up
-        $migrations = $migrator->run();
+        $migrations = $this->migrator->run();
 
         // The migration already ran shoudn't be in the pending ones
         $this->assertEquals([
@@ -132,14 +153,6 @@ class DatabaseMigratorTest extends TestCase
      */
     public function testMigratorUpWithNoPendingMigrations()
     {
-        // Mock the migrator dependencies
-        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
-        $schemaBuilder = m::mock('Illuminate\Database\Schema\Builder');
-        $locator = m::mock('UserFrosting\Sprinkle\Core\Database\MigrationLocator');
-
-        // Build migrator
-        $migrator = new Migrator($repository, $schemaBuilder, $locator);
-
         // The migrations set
         $testMigrations = [
             '\\UserFrosting\\Tests\\Integration\\Migrations\\one\\CreateUsersTable',
@@ -148,18 +161,18 @@ class DatabaseMigratorTest extends TestCase
         ];
 
         // When running up, Locator will return all 3 migration classes
-        $locator->shouldReceive('getMigrations')->andReturn($testMigrations);
+        $this->locator->shouldReceive('getMigrations')->andReturn($testMigrations);
 
         // Repository will be asked to return the ran migrations (one), the next batch number and will log 2 new migrations
-        $repository->shouldReceive('getRan')->andReturn($testMigrations);
-        $repository->shouldNotReceive('getNextBatchNumber');
-        $repository->shouldNotReceive('log');
+        $this->repository->shouldReceive('getRan')->andReturn($testMigrations);
+        $this->repository->shouldNotReceive('getNextBatchNumber');
+        $this->repository->shouldNotReceive('log');
 
         // SchemaBuilder will only create 2 tables
-        $schemaBuilder->shouldNotReceive('create');
+        $this->schema->shouldNotReceive('create');
 
         // Run migrations up
-        $migrations = $migrator->run();
+        $migrations = $this->migrator->run();
 
         // The migration already ran shoudn't be in the pending ones
         $this->assertEquals([], $migrations);
@@ -175,19 +188,11 @@ class DatabaseMigratorTest extends TestCase
      */
     public function testMigratorRollbackWithNoInstalledMigrations()
     {
-        // Mock the migrator dependencies
-        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
-        $schemaBuilder = m::mock('Illuminate\Database\Schema\Builder');
-        $locator = m::mock('UserFrosting\Sprinkle\Core\Database\MigrationLocator');
-
-        // Build migrator
-        $migrator = new Migrator($repository, $schemaBuilder, $locator);
-
         // Repository will be asked to return the last batch of ran migrations
-        $repository->shouldReceive('getLast')->andReturn([]);
+        $this->repository->shouldReceive('getLast')->andReturn([]);
 
         // Run migrations up
-        $migrations = $migrator->rollback();
+        $migrations = $this->migrator->rollback();
 
         // The migration already ran shoudn't be in the pending ones
         $this->assertEquals([], $migrations);
@@ -198,14 +203,6 @@ class DatabaseMigratorTest extends TestCase
      */
     public function testMigratorRollbackAllInstalledMigrations()
     {
-        // Mock the migrator dependencies
-        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
-        $schemaBuilder = m::mock('Illuminate\Database\Schema\Builder');
-        $locator = m::mock('UserFrosting\Sprinkle\Core\Database\MigrationLocator');
-
-        // Build migrator
-        $migrator = new Migrator($repository, $schemaBuilder, $locator);
-
         // The migrations set
         $testMigrations = [
             '\\UserFrosting\\Tests\\Integration\\Migrations\\one\\CreateUsersTable',
@@ -214,17 +211,17 @@ class DatabaseMigratorTest extends TestCase
         ];
 
         // When running up, Locator will return all 3 migration classes
-        $locator->shouldReceive('getMigrations')->once()->andReturn($testMigrations);
+        $this->locator->shouldReceive('getMigrations')->once()->andReturn($testMigrations);
 
         // Repository will be asked to return the ran migrations (one), the next batch number and will log 2 new migrations
-        $repository->shouldReceive('getLast')->once()->andReturn($testMigrations);
-        $repository->shouldReceive('delete')->times(3)->andReturn([]);
+        $this->repository->shouldReceive('getLast')->once()->andReturn($testMigrations);
+        $this->repository->shouldReceive('delete')->times(3)->andReturn([]);
 
         // SchemaBuilder will only create 2 tables
-        $schemaBuilder->shouldReceive('dropIfExists')->times(3)->andReturn([]);
+        $this->schema->shouldReceive('dropIfExists')->times(3)->andReturn([]);
 
         // Run migrations up
-        $migrations = $migrator->rollback();
+        $migrations = $this->migrator->rollback();
 
         // The migration already ran shoudn't be in the pending ones
         $this->assertEquals($testMigrations, $migrations);
@@ -235,31 +232,23 @@ class DatabaseMigratorTest extends TestCase
      */
     public function testMigratorRollbackAllInstalledMigrationsWithOneMissing()
     {
-        // Mock the migrator dependencies
-        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
-        $schemaBuilder = m::mock('Illuminate\Database\Schema\Builder');
-        $locator = m::mock('UserFrosting\Sprinkle\Core\Database\MigrationLocator');
-
-        // Build migrator
-        $migrator = new Migrator($repository, $schemaBuilder, $locator);
-
         // When running up, Locator will return all 3 migration classes
-        $locator->shouldReceive('getMigrations')->once()->andReturn([
+        $this->locator->shouldReceive('getMigrations')->once()->andReturn([
             '\\UserFrosting\\Tests\\Integration\\Migrations\\one\\CreatePasswordResetsTable'
         ]);
 
         // Repository will be asked to return the ran migrations (one), the next batch number and will log 2 new migrations
-        $repository->shouldReceive('getLast')->once()->andReturn([
+        $this->repository->shouldReceive('getLast')->once()->andReturn([
             '\\UserFrosting\\Tests\\Integration\\Migrations\\one\\CreateUsersTable',
             '\\UserFrosting\\Tests\\Integration\\Migrations\\one\\CreatePasswordResetsTable'
         ]);
-        $repository->shouldReceive('delete')->times(1)->andReturn([]);
+        $this->repository->shouldReceive('delete')->times(1)->andReturn([]);
 
         // SchemaBuilder will only create 2 tables
-        $schemaBuilder->shouldReceive('dropIfExists')->times(1)->andReturn([]);
+        $this->schema->shouldReceive('dropIfExists')->times(1)->andReturn([]);
 
         // Run migrations up
-        $migrations = $migrator->rollback();
+        $migrations = $this->migrator->rollback();
 
         // The migration already ran shoudn't be in the pending ones
         $this->assertEquals([
@@ -272,14 +261,6 @@ class DatabaseMigratorTest extends TestCase
      */
     public function testMigratorResetAllInstalledMigrations()
     {
-        // Mock the migrator dependencies
-        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
-        $schemaBuilder = m::mock('Illuminate\Database\Schema\Builder');
-        $locator = m::mock('UserFrosting\Sprinkle\Core\Database\MigrationLocator');
-
-        // Build migrator
-        $migrator = new Migrator($repository, $schemaBuilder, $locator);
-
         // The migrations set
         $testMigrations = [
             '\\UserFrosting\\Tests\\Integration\\Migrations\\one\\CreateUsersTable',
@@ -288,17 +269,17 @@ class DatabaseMigratorTest extends TestCase
         ];
 
         // When running up, Locator will return all 3 migration classes
-        $locator->shouldReceive('getMigrations')->once()->andReturn($testMigrations);
+        $this->locator->shouldReceive('getMigrations')->once()->andReturn($testMigrations);
 
         // Repository will be asked to return the ran migrations (one), the next batch number and will log 2 new migrations
-        $repository->shouldReceive('getRan')->once()->andReturn($testMigrations);
-        $repository->shouldReceive('delete')->times(3)->andReturn([]);
+        $this->repository->shouldReceive('getRan')->once()->andReturn($testMigrations);
+        $this->repository->shouldReceive('delete')->times(3)->andReturn([]);
 
         // SchemaBuilder will only create 2 tables
-        $schemaBuilder->shouldReceive('dropIfExists')->times(3)->andReturn([]);
+        $this->schema->shouldReceive('dropIfExists')->times(3)->andReturn([]);
 
         // Run migrations up
-        $migrations = $migrator->reset();
+        $migrations = $this->migrator->reset();
 
         // The migration already ran shoudn't be in the pending ones
         $this->assertEquals(array_reverse($testMigrations), $migrations);
