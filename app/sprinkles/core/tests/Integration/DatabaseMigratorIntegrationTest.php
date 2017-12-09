@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository;
 use UserFrosting\Sprinkle\Core\Database\MigrationLocator;
 use UserFrosting\Sprinkle\Core\Database\Migrator;
+use UserFrosting\Sprinkle\Core\Util\BadClassNameException;
 use UserFrosting\Tests\TestCase;
 
 class DatabaseMigratorIntegrationTest extends TestCase
@@ -177,6 +178,19 @@ class DatabaseMigratorIntegrationTest extends TestCase
         $this->assertFalse($this->schema->hasTable('deprecated_table'));
     }
 
+    public function testWithInvalidClass()
+    {
+        // Change the repository so we can test with the InvalidMigrationLocatorStub
+        $locator = new InvalidMigrationLocatorStub($this->ci->sprinkleManager, new Filesystem);
+        $this->migrator->setLocator($locator);
+
+        // Expect a `BadClassNameException` exception
+        $this->expectException(BadClassNameException::class);
+
+        // Run up
+        $this->migrator->run();
+    }
+
     /**
      *    !TODO :
      *    - Test unfulfillable migrations
@@ -192,6 +206,19 @@ class MigrationLocatorStub extends MigrationLocator {
         ];
     }
 }
+
+/**
+ *    This stub contain migration which file doesn't exists
+ */
+class InvalidMigrationLocatorStub extends MigrationLocator {
+    public function getMigrations()
+    {
+        return [
+            '\\UserFrosting\\Tests\\Integration\\Migrations\\Foo'
+        ];
+    }
+}
+
 /**
  *    This stub contain migration which order they need to be run is different
  *    than the order the file are returned because of dependencies management

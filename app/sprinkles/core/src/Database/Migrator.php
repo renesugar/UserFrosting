@@ -10,6 +10,7 @@ namespace UserFrosting\Sprinkle\Core\Database;
 use Illuminate\Database\Schema\Builder;
 use UserFrosting\Sprinkle\Core\Database\MigrationLocatorInterface;
 use UserFrosting\Sprinkle\Core\Database\MigrationRepositoryInterface;
+use UserFrosting\Sprinkle\Core\Util\BadClassNameException;
 
 /**
  * Migrator Class
@@ -392,6 +393,10 @@ class Migrator
      */
     public function resolve($migrationClass)
     {
+        if (!class_exists($migrationClass)) {
+            throw new BadClassNameException("Unable to find the migration class '$migrationClass'." );
+        }
+
         return new $migrationClass($this->schema);
     }
 
