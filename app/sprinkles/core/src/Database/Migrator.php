@@ -10,6 +10,7 @@ namespace UserFrosting\Sprinkle\Core\Database;
 use Illuminate\Database\Schema\Builder;
 use UserFrosting\Sprinkle\Core\Database\MigrationLocatorInterface;
 use UserFrosting\Sprinkle\Core\Database\MigrationRepositoryInterface;
+use UserFrosting\Sprinkle\Core\Database\MigrationDependencyAnalyser as Analyser;
 use UserFrosting\Sprinkle\Core\Util\BadClassNameException;
 
 /**
@@ -68,13 +69,34 @@ class Migrator
         // Get the list of available migration classes in the the Filesystem
         $availableMigrations = $this->getAvailableMigrations();
 
+        // Get ran migrations
+        $ranMigrations = $this->repository->getRan();
+
         // Get outstanding migrations classes that requires to be run up
-        $pendingMigrations = $this->pendingMigrations($availableMigrations, $this->repository->getRan());
+        $pendingMigrations = $this->pendingMigrations($availableMigrations, $ranMigrations);
+
+        // First we will just make sure that there are any migrations to run. If there
+        // aren't, we will just make a note of it to the developer so they're aware
+        // that all of the migrations have been run against this database system.
+        if (count($pendingMigrations) == 0) {
+            $this->note('<info>Nothing to migrate.</info>');
+            return [];
+        }
+
+        // Next we need to validate that all pending migration dependencies are met or WILL BE MET
+        // This operation is important as it's the one that place the outstanding migrations
+        // in the correct order, making sure a migration script won't fail because the table
+        // it depends on has not been created yet (for example).
+        $analyser = new Analyser($pendingMigrations, $ranMigrations);
+
+        // Any migration without a fulfilled dependency will cause this script to throw an exception
+        if ($unfulfillable = $analyser->getUnfulfillable()) {
+            $unfulfillableList = implode(", ", $unfulfillable);
+            throw new \Exception("Unfulfillable migrations found :: $unfulfillableList");
+        }
 
         // Run pending migration up
-        $this->runPending($pendingMigrations, $options);
-
-        return $pendingMigrations;
+        return $this->runPending($analyser->getFulfillable(), $options);
     }
 
     /**
@@ -105,24 +127,8 @@ class Migrator
      *    @param  array $options The options for the current operation [step, pretend]
      *    @return void
      */
-    public function runPending(array $migrations, array $options = [])
+    protected function runPending(array $migrations, array $options = [])
     {
-        // First we will just make sure that there are any migrations to run. If there
-        // aren't, we will just make a note of it to the developer so they're aware
-        // that all of the migrations have been run against this database system.
-        if (count($migrations) == 0) {
-            $this->note('<info>Nothing to migrate.</info>');
-
-            return;
-        }
-
-        // Next we need to validate that all pending migration dependencies are met or WILL BE MET
-        // This operation is important as it's the one that place the outstanding migrations
-        // in the correct order, making sure a migration script won't fail because the table
-        // it depends on has not been created yet (for example). Any migration without a fulfilled
-        // dependency will cause this script to throw an exception
-        $orderedMigrations = $migrations; //!TODO Implement this !
-
         // Next, we will get the next batch number for the migrations so we can insert
         // correct batch number in the database migrations repository when we store
         // each migration's execution.
@@ -135,13 +141,15 @@ class Migrator
         // We now have an ordered array of migrations, we will spin through them and run the
         // migrations "up" so the changes are made to the databases. We'll then log
         // that the migration was run so we don't repeat it next time we execute.
-        foreach ($orderedMigrations as $migrationClass) {
+        foreach ($migrations as $migrationClass) {
             $this->runUp($migrationClass, $batch, $pretend);
 
             if ($step) {
                 $batch++;
             }
         }
+
+        return $migrations;
     }
 
     /**
@@ -375,7 +383,7 @@ class Migrator
      */
     protected function getQueries($migration, $method)
     {
-        // Get the schema builder db instance 
+        // Get the schema builder db instance
         $db = $this->schema->getConnection();
 
         return $db->pretend(function () use ($migration, $method) {

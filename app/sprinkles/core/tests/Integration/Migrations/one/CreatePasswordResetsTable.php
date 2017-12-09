@@ -10,9 +10,7 @@ class CreatePasswordResetsTable extends Migration
     /**
      * {@inheritDoc}
      */
-    public $dependencies = [
-        'UserFrosting\Tests\Integration\Migrations\one\CreateUsersTable'
-    ];
+    public static $dependencies = [];
 
     /**
      * Run the migrations.

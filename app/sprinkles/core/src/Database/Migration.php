@@ -25,8 +25,10 @@ abstract class Migration
     /**
      * List of dependencies for this migration.
      * Should return an array of class required to be run before this migration
+     *
+     * N.B.: Uncomment the next line when the static $dependencie deprecation is removed
      */
-    public $dependencies = [];
+    //public static $dependencies = [];
 
     /**
      * __construct function.
@@ -35,7 +37,7 @@ abstract class Migration
      * @param Illuminate\Database\Schema\Builder $schema
      * @return void
      */
-    public function __construct(Builder $schema)
+    public function __construct(Builder $schema = null)
     {
         $this->schema = $schema;
     }

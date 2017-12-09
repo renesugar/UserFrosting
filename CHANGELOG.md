@@ -1,5 +1,32 @@
 # Change Log
 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- Added tests for migrator and it's components.
+- Added tests for `migrate` Bakery command and sub-commands.
+
+### Changed
+- Migration construction doesn't accept the IO instance anymore.
+- Moved `migrate` Bakery command and sub-commands to the `Core` sprinkle.
+- Re-written Migrator. The migrator is now detached from the console and Bakery..
+
+### Deprecated
+- Migrations should now extends `UserFrosting\Sprinkle\Core\Database\Migration` instead of `UserFrosting\System\Bakery\Migration`.
+- Migrations dependencies property should now be a static property.
+
+### Removed
+- The console IO instance is not available anymore in migrations.
+
+### Fixed
+
+### Security
+
 ## v4.1.13-alpha
 - `ufTable`: Implement `rowTemplate` for customizing how rows are rendered (#787)
 - `ufTable`: Support for passing callbacks for column templates instead of Handlebars templates
@@ -15,7 +42,7 @@
 - Change "remember me" text
 - Improve table tool buttons
 - Twig extensions now implement `Twig_Extension_GlobalsInterface` as required by https://twig.symfony.com/doc/2.x/advanced.html#id1 (#788)
-- Display element based on permissions for group list/info pages 
+- Display element based on permissions for group list/info pages
 - Factor the admin user creation out of migrations and into its own Bakery command (See #778)
 - Bakery `clear-cache` command now clears Twig and router cache (Fix #750)
 - Add Russian translations

@@ -10,7 +10,10 @@ class CreateFlightsTable extends Migration
     /**
      * {@inheritDoc}
      */
-    public $dependencies = [];
+    public static $dependencies = [
+        '\UserFrosting\Tests\Integration\Migrations\one\CreateUsersTable',
+        '\UserFrosting\Tests\Integration\Migrations\one\CreatePasswordResetsTable'
+    ];
 
     /**
      * Run the migrations.

@@ -27,7 +27,7 @@ class Migration extends newMigration
       * @param Illuminate\Database\Schema\Builder $schema
       * @return void
       */
-     public function __construct(Builder $schema, SymfonyStyle $io = null)
+     public function __construct(Builder $schema = null, SymfonyStyle $io = null)
      {
          Debug::debug("`UserFrosting\System\Bakery\Migration` has been deprecated and will be removed in future versions.  Please have your `" . static::class . "` migration extend the base `UserFrosting\Sprinkle\Core\Database\Migration` class instead.");
 
