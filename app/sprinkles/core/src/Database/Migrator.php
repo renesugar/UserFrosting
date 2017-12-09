@@ -492,7 +492,7 @@ class Migrator
      */
     public function setConnection($name)
     {
-        //$this->repository->setSource($name);
+        $this->repository->setSource($name);
         $this->connection = $name;
     }
 

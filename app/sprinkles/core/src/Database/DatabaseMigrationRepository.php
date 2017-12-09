@@ -7,7 +7,7 @@
  */
 namespace UserFrosting\Sprinkle\Core\Database;
 
-use Illuminate\Database\Schema\Builder;
+use Illuminate\Database\Capsule\Manager as Capsule;
 use UserFrosting\Sprinkle\Core\Database\MigrationRepositoryInterface;
 
 /**
@@ -20,18 +20,19 @@ use UserFrosting\Sprinkle\Core\Database\MigrationRepositoryInterface;
 class DatabaseMigrationRepository implements MigrationRepositoryInterface
 {
     /**
-     * The schema builder instance
-     *
-     * @var \Illuminate\Database\Schema\Builder
+     * @var Capsule
      */
-    protected $schema;
+    protected $db;
 
     /**
-     * The name of the migration table.
-     *
-     * @var string
+     * @var string The name of the migration table.
      */
     protected $table;
+
+    /**
+     * @var string The connection name
+     */
+    protected $connection;
 
     /**
      * Create a new database migration repository instance.
@@ -40,10 +41,10 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
      * @param  string  $table
      * @return void
      */
-    public function __construct(Builder $schema, $table = "migrations")
+    public function __construct(Capsule $db, $table = "migrations")
     {
         $this->table = $table;
-        $this->schema = $schema;
+        $this->db = $db;
     }
 
     /**
@@ -136,7 +137,7 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
      */
     public function createRepository()
     {
-        $this->schema->create($this->table, function ($table) {
+        $this->getSchemaBuilder()->create($this->table, function ($table) {
             // The migrations table is responsible for keeping track of which of the
             // migrations have actually run for the application. We'll create the
             // table to hold the migration file's path as well as the batch ID.
@@ -154,7 +155,7 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
      */
     public function repositoryExists()
     {
-        return $this->schema->hasTable($this->table);
+        return $this->getSchemaBuilder()->hasTable($this->table);
     }
 
     /**
@@ -167,9 +168,14 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
         return $this->getConnection()->table($this->table);
     }
 
+    /**
+     * Returns the schema builder instance
+     *
+     * @return \Illuminate\Database\Schema\Builder
+     */
     public function getSchemaBuilder()
     {
-        return $this->schema;
+        return $this->getConnection()->getSchemaBuilder();
     }
 
     /**
@@ -179,6 +185,16 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
      */
     public function getConnection()
     {
-        return $this->schema->getConnection();
+        return $this->db->getConnection($this->connection);
+    }
+
+    /**
+     *    Set the information source to gather data.
+     *
+     *    @param string $name The source name
+     */
+    public function setSource($name)
+    {
+        $this->connection = $name;
     }
 }

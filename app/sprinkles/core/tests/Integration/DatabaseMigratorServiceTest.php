@@ -18,7 +18,6 @@ class DatabaseMigratorServiceTest extends TestCase
 {
     public function testMigratorService()
     {
-        $migrator = $this->ci->migrator;
-        $this->assertInstanceOf('UserFrosting\Sprinkle\Core\Database\Migrator', $migrator);
+        $this->assertInstanceOf('UserFrosting\Sprinkle\Core\Database\Migrator', $this->ci->migrator);
     }
 }
