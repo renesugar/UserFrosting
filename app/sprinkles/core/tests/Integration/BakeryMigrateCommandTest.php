@@ -30,8 +30,46 @@ class DatabaseMigrationMigrateCommandTest extends TestCase
 
         // Run command
         $commandTester = $this->runCommand($migrator, []);
+    }
 
-        // the output of the command in the console
+    public function testMigrationRepositoryCreatedWhenNecessary()
+    {
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
+        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
+
+        $migrator->shouldReceive('repositoryExists')->once()->andReturn(false);
+        $migrator->shouldReceive('getRepository')->once()->andReturn($repository);
+        $migrator->shouldReceive('run')->once()->with(['pretend' => false, 'step' => false])->andReturn([]);
+        $migrator->shouldReceive('getNotes');
+
+        $repository->shouldReceive('createRepository')->once();
+
+        // Run command
+        $commandTester = $this->runCommand($migrator, []);
+    }
+
+    public function testTheCommandMayBePretended()
+    {
+        // Setup migrator mock
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
+        $migrator->shouldReceive('repositoryExists')->once()->andReturn(true);
+        $migrator->shouldReceive('run')->once()->with(['pretend' => true, 'step' => false])->andReturn([]);
+        $migrator->shouldReceive('getNotes');
+
+        // Run command
+        $commandTester = $this->runCommand($migrator, ['--pretend' => true]);
+    }
+
+    public function testStepMayBeSet()
+    {
+        // Setup migrator mock
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
+        $migrator->shouldReceive('repositoryExists')->once()->andReturn(true);
+        $migrator->shouldReceive('run')->once()->with(['pretend' => false, 'step' => true])->andReturn([]);
+        $migrator->shouldReceive('getNotes');
+
+        // Run command
+        $commandTester = $this->runCommand($migrator, ['--step' => true]);
     }
 
     protected function runCommand($migrator, $input = [])
