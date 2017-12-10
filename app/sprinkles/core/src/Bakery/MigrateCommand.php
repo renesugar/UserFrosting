@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use UserFrosting\System\Bakery\BaseCommand;
+use UserFrosting\System\Bakery\ConfirmableTrait;
 
 /**
  * Migrate CLI Tools.
@@ -21,6 +22,8 @@ use UserFrosting\System\Bakery\BaseCommand;
  */
 class MigrateCommand extends BaseCommand
 {
+    use ConfirmableTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -29,8 +32,9 @@ class MigrateCommand extends BaseCommand
         $this->setName("migrate")
              ->setDescription("Perform database migration")
              ->setHelp("This command runs all the pending database migrations.")
-             ->addOption('pretend', 'p', InputOption::VALUE_NONE, 'Run migrations in "dry run" mode')
-             ->addOption('database', 'd', InputOption::VALUE_REQUIRED, 'The database connection to use')
+             ->addOption('pretend', 'p', InputOption::VALUE_NONE, 'Run migrations in "dry run" mode.')
+             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force the operation to run when in production.')
+             ->addOption('database', 'd', InputOption::VALUE_REQUIRED, 'The database connection to use.')
              ->addOption('step', 's', InputOption::VALUE_NONE, 'Force the migrations to be run so they can be rolled back individually.');
     }
 
@@ -69,6 +73,11 @@ class MigrateCommand extends BaseCommand
      */
     protected function setupMigrator(InputInterface $input)
     {
+        // Confirm action when in production mode
+        if (!$this->confirmToProceed($input->getOption('force'))) {
+            exit(1);
+        }
+
         /** @var UserFrosting\Sprinkle\Core\Database\Migrator */
         $migrator = $this->ci->migrator;
 

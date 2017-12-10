@@ -12,7 +12,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use UserFrosting\Sprinkle\Core\Bakery\MigrateCommand;
-use UserFrosting\System\Bakery\Migrator;
 
 /**
  * Migrate CLI Tools.
@@ -29,9 +28,10 @@ class MigrateRollbackCommand extends MigrateCommand
     {
         $this->setName("migrate:rollback")
              ->setDescription("Rollback last database migration")
-             ->addOption('steps', 's', InputOption::VALUE_REQUIRED, 'Number of batch to rollback', 1)
-             ->addOption('database', 'd', InputOption::VALUE_REQUIRED, 'The database connection to use')
-             ->addOption('pretend', 'p', InputOption::VALUE_NONE, 'Run migrations in "dry run" mode');
+             ->addOption('pretend', 'p', InputOption::VALUE_NONE, 'Run migrations in "dry run" mode.')
+             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force the operation to run when in production.')
+             ->addOption('database', 'd', InputOption::VALUE_REQUIRED, 'The database connection to use.')
+             ->addOption('steps', 's', InputOption::VALUE_REQUIRED, 'Number of batch to rollback.', 1);
     }
 
     /**
