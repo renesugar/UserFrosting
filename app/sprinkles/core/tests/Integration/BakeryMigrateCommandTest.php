@@ -24,15 +24,14 @@ class DatabaseMigrationMigrateCommandTest extends TestCase
     {
         // Setup migrator mock
         $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
+        $migrator->shouldReceive('repositoryExists')->once()->andReturn(true);
         $migrator->shouldReceive('run')->once()->with(['pretend' => false, 'step' => false])->andReturn([]);
-        $migrator->shouldReceive('getNotes')->andReturn(["Nothing to Migrate"]);
+        $migrator->shouldReceive('getNotes');
 
         // Run command
         $commandTester = $this->runCommand($migrator, []);
 
         // the output of the command in the console
-        $output = $commandTester->getDisplay();
-        $this->assertContains('Nothing to Migrate', $output);
     }
 
     protected function runCommand($migrator, $input = [])

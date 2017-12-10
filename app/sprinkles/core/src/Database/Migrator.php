@@ -85,7 +85,6 @@ class Migrator
         // aren't, we will just make a note of it to the developer so they're aware
         // that all of the migrations have been run against this database system.
         if (count($pendingMigrations) == 0) {
-            $this->note('<info>Nothing to migrate.</info>');
             return [];
         }
 
@@ -364,10 +363,11 @@ class Migrator
      */
     protected function pretendToRun($migration, $method)
     {
-        foreach ($this->getQueries($migration, $method) as $query) {
-            $name = get_class($migration);
+        $name = get_class($migration);
+        $this->note("\n<info>$name</info>");
 
-            $this->note("<info>{$name}:</info> {$query['query']}");
+        foreach ($this->getQueries($migration, $method) as $query) {
+            $this->note("> {$query['query']}");
         }
     }
 

@@ -30,6 +30,7 @@ class MigrateCommand extends BaseCommand
              ->setDescription("Perform database migration")
              ->setHelp("This command runs all the pending database migrations.")
              ->addOption('pretend', 'p', InputOption::VALUE_NONE, 'Run migrations in "dry run" mode')
+             ->addOption('database', 'd', InputOption::VALUE_REQUIRED, 'The database connection to use')
              ->addOption('step', 's', InputOption::VALUE_NONE, 'Force the migrations to be run so they can be rolled back individually.');
     }
 
@@ -43,18 +44,40 @@ class MigrateCommand extends BaseCommand
         // Get options
         $pretend = $input->getOption('pretend');
         $step = $input->getOption('step');
+        $database = $input->getOption('database');
 
         /** @var UserFrosting\Sprinkle\Core\Database\Migrator */
         $migrator = $this->ci->migrator;
 
         // Set connection to the selected database
+        if ($database != "") {
+            $this->io->note("Running migrate command with `$database` database connection");
+            $this->ci->db->getDatabaseManager()->setDefaultConnection($database);
+        }
 
+        // Make sure repository exist. Should be done in ServicesProvider,
+        // but if we change connection, it might not exist
+        if (!$migrator->repositoryExists()) {
+            $migrator->getRepository()->createRepository();
+        }
+
+        // Show note if pretending
+        if ($pretend) {
+            $this->io->note("Running migration in pretend mode");
         }
 
         // Run migration
-        $migrator->run(['pretend' => $pretend, 'step' => $step]);
+        $migrated = $migrator->run(['pretend' => $pretend, 'step' => $step]);
 
         // Get notes and display them
         $this->io->writeln($migrator->getNotes());
+
+        // If all went well, there's no fatal errors and we have migrated
+        // something, show some success
+        if (empty($migrated)) {
+            $this->io->success("Nothing to migrate");
+        } else {
+            $this->io->success("Migration successful !");
+        }
     }
 }
