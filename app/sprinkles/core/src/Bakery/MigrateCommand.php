@@ -15,8 +15,8 @@ use UserFrosting\System\Bakery\BaseCommand;
 use UserFrosting\System\Bakery\ConfirmableTrait;
 
 /**
- * Migrate CLI Tools.
- * Perform database migrations commands
+ * migrate Bakery Command
+ * Perform database migration
  *
  * @author Louis Charette
  */

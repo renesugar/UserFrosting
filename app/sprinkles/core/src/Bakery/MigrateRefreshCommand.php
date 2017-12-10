@@ -14,10 +14,10 @@ use Symfony\Component\Console\Input\InputOption;
 use UserFrosting\Sprinkle\Core\Bakery\MigrateCommand;
 
 /**
- * Migrate CLI Tools.
- * Perform database migrations commands
+ * migrate:refresh Bakery Command.
+ * Refresh the database by rolling back the last migrations and running them up again
  *
- * @author Alex Weissman (https://alexanderweissman.com)
+ * @author Louis Charette
  */
 class MigrateRefreshCommand extends MigrateCommand
 {

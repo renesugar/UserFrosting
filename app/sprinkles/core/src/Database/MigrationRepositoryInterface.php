@@ -76,6 +76,13 @@ interface MigrationRepositoryInterface
     public function createRepository();
 
     /**
+     *    Delete the migration repository data store
+     *
+     *    @return void
+     */
+    public function deleteRepository();
+
+    /**
      * Determine if the migration repository exists.
      *
      * @return bool

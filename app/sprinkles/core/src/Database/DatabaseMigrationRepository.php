@@ -148,6 +148,16 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
     }
 
     /**
+     *    Delete the migration repository data store
+     *
+     *    @return void
+     */
+    public function deleteRepository()
+    {
+        $this->getSchemaBuilder()->drop($this->table);
+    }
+
+    /**
      * Determine if the migration repository exists.
      *
      * @return bool
