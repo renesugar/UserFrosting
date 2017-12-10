@@ -8,11 +8,6 @@ use UserFrosting\System\Bakery\Migration;
 class DeprecatedClassTable extends Migration
 {
     /**
-     * {@inheritDoc}
-     */
-    public $dependencies = [];
-
-    /**
      * Run the migrations.
      *
      * @return void

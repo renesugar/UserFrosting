@@ -49,9 +49,6 @@ class MigrateCommand extends BaseCommand
 
         // Set connection to the selected database
 
-        // Make sure repository exist
-        if (! $migrator->repositoryExists()) {
-            $migrator->getRepository()->createRepository();
         }
 
         // Run migration

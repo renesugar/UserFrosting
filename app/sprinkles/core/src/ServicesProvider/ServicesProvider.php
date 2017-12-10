@@ -456,11 +456,18 @@ class ServicesProvider
          * This service handles database migration operations
          */
         $container['migrator'] = function ($c) {
-            return new Migrator(
+            $migrator = new Migrator(
                 $c->db,
                 new DatabaseMigrationRepository($c->db, 'migrations'), //<- Put the table in a config \TODO
                 new MigrationLocator($c->sprinkleManager, new Filesystem)
             );
+
+            // Make sure repository exist
+            if (!$migrator->repositoryExists()) {
+                $migrator->getRepository()->createRepository();
+            }
+
+            return $migrator;
         };
 
         /**

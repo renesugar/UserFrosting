@@ -209,6 +209,8 @@ class MigrationDependencyAnalyser
             Debug::debug("`$migration` uses a non static `dependencies` property. Please change the `dependencies` property to a static property.");
             $instance = new $migration();
             return $instance->dependencies;
+        } else {
+            return [];
         }
     }
 }

@@ -47,9 +47,7 @@ class DatabaseMigratorIntegrationTest extends TestCase
     protected $repository;
 
     /**
-     * Bootstrap Eloquent.
-     *
-     * @return void
+     * Setup migration instances used for all tests
      */
     public function setUp()
     {
