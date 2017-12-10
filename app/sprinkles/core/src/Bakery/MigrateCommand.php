@@ -44,29 +44,9 @@ class MigrateCommand extends BaseCommand
         // Get options
         $pretend = $input->getOption('pretend');
         $step = $input->getOption('step');
-        $database = $input->getOption('database');
-
-        /** @var UserFrosting\Sprinkle\Core\Database\Migrator */
-        $migrator = $this->ci->migrator;
-
-        // Set connection to the selected database
-        if ($database != "") {
-            $this->io->note("Running migrate command with `$database` database connection");
-            $this->ci->db->getDatabaseManager()->setDefaultConnection($database);
-        }
-
-        // Make sure repository exist. Should be done in ServicesProvider,
-        // but if we change connection, it might not exist
-        if (!$migrator->repositoryExists()) {
-            $migrator->getRepository()->createRepository();
-        }
-
-        // Show note if pretending
-        if ($pretend) {
-            $this->io->note("Running migration in pretend mode");
-        }
 
         // Run migration
+        $migrator = $this->setupMigrator($input);
         $migrated = $migrator->run(['pretend' => $pretend, 'step' => $step]);
 
         // Get notes and display them
@@ -79,5 +59,37 @@ class MigrateCommand extends BaseCommand
         } else {
             $this->io->success("Migration successful !");
         }
+    }
+
+    /**
+     *    Setup migrator and the shared options between other command
+     *
+     *    @param  InputInterface $input
+     *    @return Migrator The migrator instance
+     */
+    protected function setupMigrator(InputInterface $input)
+    {
+        /** @var UserFrosting\Sprinkle\Core\Database\Migrator */
+        $migrator = $this->ci->migrator;
+
+        // Set connection to the selected database
+        $database = $input->getOption('database');
+        if ($database != "") {
+            $this->io->note("Running {$this->getName()} with `$database` database connection");
+            $this->ci->db->getDatabaseManager()->setDefaultConnection($database);
+        }
+
+        // Make sure repository exist. Should be done in ServicesProvider,
+        // but if we change connection, it might not exist
+        if (!$migrator->repositoryExists()) {
+            $migrator->getRepository()->createRepository();
+        }
+
+        // Show note if pretending
+        if ($input->hasOption('pretend') && $input->getOption('pretend')) {
+            $this->io->note("Running {$this->getName()} in pretend mode");
+        }
+
+        return $migrator;
     }
 }

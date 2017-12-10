@@ -198,7 +198,7 @@ class Migrator
     /**
      *    Rollback the last migration operation.
      *
-     *    @param  array $options The options for the current operation [step, pretend]
+     *    @param  array $options The options for the current operation [steps, pretend]
      *    @return array The list of rolledback migration classes
      */
     public function rollback(array $options = [])
@@ -211,8 +211,6 @@ class Migrator
         $migrations = $this->getMigrationsForRollback($options);
 
         if (count($migrations) === 0) {
-            $this->note('<info>Nothing to rollback.</info>');
-
             return [];
         } else {
             return $this->rollbackMigrations($migrations, $options);
@@ -227,7 +225,7 @@ class Migrator
      */
     protected function getMigrationsForRollback(array $options)
     {
-        $steps = Arr::get($options, 'step', 0);
+        $steps = Arr::get($options, 'steps', 0);
         if ($steps > 0) {
             return $this->repository->getMigrations($steps);
         } else {
@@ -292,8 +290,6 @@ class Migrator
         $migrations = array_reverse($this->repository->getRan());
 
         if (count($migrations) === 0) {
-            $this->note('<info>Nothing to rollback.</info>');
-
             return [];
         } else {
             return $this->rollbackMigrations($migrations, compact('pretend'));
@@ -312,8 +308,6 @@ class Migrator
         // We resolve an instance of the migration. Once we get an instance we can either run a
         // pretend execution of the migration or we can run the real migration.
         $instance = $this->resolve($migrationClass);
-
-        $this->note("<comment>Rolling back:</comment> {$migrationClass}");
 
         if ($pretend) {
             return $this->pretendToRun($instance, 'down');

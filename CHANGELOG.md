@@ -10,11 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Added tests for migrator and it's components.
 - Added tests for `migrate` Bakery command and sub-commands.
+- Added `database` option for `migrate` and `migrate:*` Bakery commands
 
 ### Changed
-- Migration construction doesn't accept the IO instance anymore.
 - Moved `migrate` Bakery command and sub-commands to the `Core` sprinkle.
-- Re-written Migrator. The migrator is now detached from the console and Bakery.
+- Re-written Migrator. The migrator is now detached from the console and Bakery. The migrator is now included in the ServicesProvider and included in the `Core` sprinkle.
 
 ### Deprecated
 - Migrations should now extends `UserFrosting\Sprinkle\Core\Database\Migration` instead of `UserFrosting\System\Bakery\Migration`.
@@ -22,7 +22,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 - The console IO instance is not available anymore in migrations.
+- Removed the `io` property from migration classes.
 - Removed Bakery `projectRoot` property. Use the `\UserFrosting\ROOT_DIR` constant instead.
+- Removed `preted` option from Bakery `migrate:refresh` and `migrate:reset` commands.
 
 ### Fixed
 
