@@ -162,19 +162,4 @@ class BuildAssets extends BaseCommand
         $this->io->writeln("> <comment>npm run uf-clean</comment>");
         passthru("npm run uf-clean --prefix " . $this->buildPath);
     }
-
-    /**
-     * Return if the app is in production mode
-     *
-     * @access protected
-     * @return bool
-     */
-    protected function isProduction()
-    {
-        // N.B.: Need to touch the config service first to load dotenv values
-        $config = $this->ci->config;
-        $mode = getenv("UF_MODE") ?: '';
-
-        return ($mode == "production");
-    }
 }
