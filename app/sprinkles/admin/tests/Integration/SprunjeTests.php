@@ -29,6 +29,12 @@ class SprunjeTests extends TestCase
         parent::setUp();
 
         $this->classMapper = new ClassMapper();
+
+        // Use the test_integration for this test
+        $this->ci->db->getDatabaseManager()->setDefaultConnection('test_integration');
+
+        // Setup the db
+        $this->ci->migrator->run();
     }
 
     /**
