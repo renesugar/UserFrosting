@@ -23,7 +23,7 @@ class BakeryMigrateRefreshCommandTest extends TestCase
     public function testBasicMigrationsCallMigratorWithProperArguments()
     {
         // Setup migrator mock
-        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\Migrator');
         $migrator->shouldReceive('repositoryExists')->once()->andReturn(true);
         $migrator->shouldReceive('rollback')->once()->with(['pretend' => false, 'steps' => 1])->andReturn(['foo']);
         $migrator->shouldReceive('run')->once()->with(['pretend' => false, 'step' => false])->andReturn([]);
@@ -36,7 +36,7 @@ class BakeryMigrateRefreshCommandTest extends TestCase
     public function testBasicCallWithNotthingToRollback()
     {
         // Setup migrator mock
-        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\Migrator');
         $migrator->shouldReceive('repositoryExists')->once()->andReturn(true);
         $migrator->shouldReceive('rollback')->once()->with(['pretend' => false, 'steps' => 1])->andReturn([]);
         $migrator->shouldNotReceive('run');
@@ -49,7 +49,7 @@ class BakeryMigrateRefreshCommandTest extends TestCase
     public function testStepsMayBeSet()
     {
         // Setup migrator mock
-        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\Migrator');
         $migrator->shouldReceive('repositoryExists')->once()->andReturn(true);
         $migrator->shouldReceive('rollback')->once()->with(['pretend' => false, 'steps' => 3])->andReturn(['foo']);
         $migrator->shouldReceive('run')->once()->with(['pretend' => false, 'step' => false])->andReturn([]);

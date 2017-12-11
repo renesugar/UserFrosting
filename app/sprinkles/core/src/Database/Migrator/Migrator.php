@@ -5,13 +5,13 @@
  * @link      https://github.com/userfrosting/UserFrosting
  * @license   https://github.com/userfrosting/UserFrosting/blob/master/licenses/UserFrosting.md (MIT License)
  */
-namespace UserFrosting\Sprinkle\Core\Database;
+namespace UserFrosting\Sprinkle\Core\Database\Migrator;
 
 use Illuminate\Support\Arr;
 use Illuminate\Database\Capsule\Manager as Capsule;
-use UserFrosting\Sprinkle\Core\Database\MigrationLocatorInterface;
-use UserFrosting\Sprinkle\Core\Database\MigrationRepositoryInterface;
-use UserFrosting\Sprinkle\Core\Database\MigrationDependencyAnalyser as Analyser;
+use UserFrosting\Sprinkle\Core\Database\Migrator\MigrationLocatorInterface;
+use UserFrosting\Sprinkle\Core\Database\Migrator\MigrationRepositoryInterface;
+use UserFrosting\Sprinkle\Core\Database\Migrator\MigrationDependencyAnalyser as Analyser;
 use UserFrosting\Sprinkle\Core\Util\BadClassNameException;
 
 /**
@@ -44,7 +44,7 @@ class Migrator
     protected $connection;
 
     /**
-     * @var Array The notes for the current operation.
+     * @var array The notes for the current operation.
      */
     protected $notes = [];
 
@@ -274,7 +274,7 @@ class Migrator
     /**
      *    Rolls all of the currently applied migrations back.
      *
-     *    @param boolean $pretend Should this operation be pretended
+     *    @param bool $pretend Should this operation be pretended
      *    @return array An array of all the rolledback migration classes
      */
     public function reset($pretend = false)
@@ -462,7 +462,7 @@ class Migrator
     /**
      *    Get the schema builder.
      *
-     *    @return Illuminate\Database\Schema\Builder
+     *    @return \Illuminate\Database\Schema\Builder
      */
     public function getSchemaBuilder()
     {
@@ -472,7 +472,7 @@ class Migrator
     /**
      *    Return the connection instance
      *
-     *    @return Illuminate\Database\Connection
+     *    @return \Illuminate\Database\Connection
      */
     public function getConnection()
     {

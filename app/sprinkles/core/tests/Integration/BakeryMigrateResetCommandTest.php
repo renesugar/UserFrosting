@@ -23,11 +23,11 @@ class BakeryMigrateResetCommandTest extends TestCase
     public function testBasicMigrationsCallMigratorWithProperArguments()
     {
         // Setup repository mock
-        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
+        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\DatabaseMigrationRepository');
         $repository->shouldReceive('deleteRepository')->andReturn(null);
 
         // Setup migrator mock
-        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\Migrator');
         $migrator->shouldReceive('repositoryExists')->twice()->andReturn(true);
         $migrator->shouldReceive('reset')->once()->with(false)->andReturn(['foo']);
         $migrator->shouldReceive('getNotes');
@@ -40,11 +40,11 @@ class BakeryMigrateResetCommandTest extends TestCase
     public function testBasicCallWithNotthingToRollback()
     {
         // Setup repository mock
-        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
+        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\DatabaseMigrationRepository');
         $repository->shouldReceive('deleteRepository')->andReturn(null);
 
         // Setup migrator mock
-        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\Migrator');
         $migrator->shouldReceive('repositoryExists')->twice()->andReturn(true);
         $migrator->shouldReceive('reset')->once()->with(false)->andReturn([]);
         $migrator->shouldReceive('getNotes');
@@ -57,7 +57,7 @@ class BakeryMigrateResetCommandTest extends TestCase
     public function testTheCommandMayBePretended()
     {
         // Setup migrator mock
-        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\Migrator');
         $migrator->shouldReceive('repositoryExists')->once()->andReturn(true);
         $migrator->shouldReceive('reset')->once()->with(true)->andReturn(['foo']);
         $migrator->shouldReceive('getNotes');

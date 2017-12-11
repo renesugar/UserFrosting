@@ -9,7 +9,7 @@ namespace UserFrosting\Tests\Integration;
 
 use Mockery as m;
 use UserFrosting\Tests\TestCase;
-use UserFrosting\Sprinkle\Core\Database\MigrationLocator;
+use UserFrosting\Sprinkle\Core\Database\Migrator\MigrationLocator;
 
 class MigrationLocatorTest extends TestCase
 {

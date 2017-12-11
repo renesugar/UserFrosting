@@ -9,7 +9,7 @@ namespace UserFrosting\Tests\Integration;
 
 use Mockery as m;
 use Illuminate\Support\Collection;
-use UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository;
+use UserFrosting\Sprinkle\Core\Database\Migrator\DatabaseMigrationRepository;
 use UserFrosting\Tests\TestCase;
 
 class MigrationRepositoryTest extends TestCase

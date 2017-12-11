@@ -9,7 +9,7 @@ namespace UserFrosting\Tests\Integration;
 
 use Mockery as m;
 use UserFrosting\Tests\TestCase;
-use UserFrosting\Sprinkle\Core\Database\Migrator;
+use UserFrosting\Sprinkle\Core\Database\Migrator\Migrator;
 
 /**
  *    Tests for the Migrator Class
@@ -58,8 +58,8 @@ class DatabaseMigratorTest extends TestCase
 
         // Create mock objects
         $this->schema = m::mock('Illuminate\Database\Schema\Builder');
-        $this->repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
-        $this->locator = m::mock('UserFrosting\Sprinkle\Core\Database\MigrationLocator');
+        $this->repository = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\DatabaseMigrationRepository');
+        $this->locator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\MigrationLocator');
         $capsule = m::mock('Illuminate\Database\Capsule\Manager');
         $connectionMock = m::mock('Illuminate\Database\Connection');
 

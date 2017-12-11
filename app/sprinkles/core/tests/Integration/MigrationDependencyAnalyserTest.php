@@ -7,7 +7,7 @@
  */
 namespace UserFrosting\Tests\Integration;
 
-use UserFrosting\Sprinkle\Core\Database\MigrationDependencyAnalyser;
+use UserFrosting\Sprinkle\Core\Database\Migrator\MigrationDependencyAnalyser;
 use UserFrosting\Sprinkle\Core\Util\BadClassNameException;
 use UserFrosting\Tests\TestCase;
 

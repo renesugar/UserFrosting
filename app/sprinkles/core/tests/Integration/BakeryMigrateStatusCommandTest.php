@@ -23,8 +23,8 @@ class BakeryMigrateStatusCommandTest extends TestCase
     public function testBasicMigrationsCallMigratorWithProperArguments()
     {
         // Setup migrator mock
-        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
-        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\Migrator');
+        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\DatabaseMigrationRepository');
 
         // Define dummy data
         $available = ['foo', 'bar', 'oof', 'rab'];
@@ -47,8 +47,8 @@ class BakeryMigrateStatusCommandTest extends TestCase
     public function testDatabaseMayBeSet()
     {
         // Setup migrator mock
-        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
-        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\Migrator');
+        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\DatabaseMigrationRepository');
 
         // Define dummy data
         $available = ['foo', 'bar', 'oof', 'rab'];

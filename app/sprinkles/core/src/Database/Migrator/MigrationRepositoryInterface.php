@@ -5,7 +5,7 @@
  * @link      https://github.com/userfrosting/UserFrosting
  * @license   https://github.com/userfrosting/UserFrosting/blob/master/licenses/UserFrosting.md (MIT License)
  */
-namespace UserFrosting\Sprinkle\Core\Database;
+namespace UserFrosting\Sprinkle\Core\Database\Migrator;
 
 /**
  * MigrationRepository Interface
@@ -41,7 +41,6 @@ interface MigrationRepositoryInterface
      *
      * @param  string  $file
      * @param  int     $batch
-     * @param  string  $sprinkle
      * @return void
      */
     public function log($file, $batch);

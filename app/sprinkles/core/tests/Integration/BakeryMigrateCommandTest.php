@@ -23,7 +23,7 @@ class DatabaseMigrationMigrateCommandTest extends TestCase
     public function testBasicMigrationsCallMigratorWithProperArguments()
     {
         // Setup migrator mock
-        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\Migrator');
         $migrator->shouldReceive('repositoryExists')->once()->andReturn(true);
         $migrator->shouldReceive('run')->once()->with(['pretend' => false, 'step' => false])->andReturn([]);
         $migrator->shouldReceive('getNotes');
@@ -34,8 +34,8 @@ class DatabaseMigrationMigrateCommandTest extends TestCase
 
     public function testMigrationRepositoryCreatedWhenNecessary()
     {
-        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
-        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\DatabaseMigrationRepository');
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\Migrator');
+        $repository = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\DatabaseMigrationRepository');
 
         $migrator->shouldReceive('repositoryExists')->once()->andReturn(false);
         $migrator->shouldReceive('getRepository')->once()->andReturn($repository);
@@ -51,7 +51,7 @@ class DatabaseMigrationMigrateCommandTest extends TestCase
     public function testTheCommandMayBePretended()
     {
         // Setup migrator mock
-        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\Migrator');
         $migrator->shouldReceive('repositoryExists')->once()->andReturn(true);
         $migrator->shouldReceive('run')->once()->with(['pretend' => true, 'step' => false])->andReturn([]);
         $migrator->shouldReceive('getNotes');
@@ -63,7 +63,7 @@ class DatabaseMigrationMigrateCommandTest extends TestCase
     public function testStepMayBeSet()
     {
         // Setup migrator mock
-        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator');
+        $migrator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\Migrator');
         $migrator->shouldReceive('repositoryExists')->once()->andReturn(true);
         $migrator->shouldReceive('run')->once()->with(['pretend' => false, 'step' => true])->andReturn([]);
         $migrator->shouldReceive('getNotes');

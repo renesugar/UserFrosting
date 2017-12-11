@@ -5,10 +5,9 @@
  * @link      https://github.com/userfrosting/UserFrosting
  * @license   https://github.com/userfrosting/UserFrosting/blob/master/licenses/UserFrosting.md (MIT License)
  */
-namespace UserFrosting\Sprinkle\Core\Database;
+namespace UserFrosting\Sprinkle\Core\Database\Migrator;
 
 use ReflectionClass;
-use Illuminate\Database\Schema\Builder;
 use UserFrosting\Sprinkle\Core\Util\BadClassNameException;
 use UserFrosting\Sprinkle\Core\Facades\Debug;
 
@@ -24,27 +23,27 @@ use UserFrosting\Sprinkle\Core\Facades\Debug;
 class MigrationDependencyAnalyser
 {
     /**
-     * @var Collection List of fulfillable migrations
+     * @var \Illuminate\Support\Collection List of fulfillable migrations
      */
     protected $fulfillable;
 
     /**
-     * @var Collection List of unfulfillable migration (Migration that needs to be run and their dependencies are NOT met)
+     * @var \Illuminate\Support\Collection List of unfulfillable migration (Migration that needs to be run and their dependencies are NOT met)
      */
     protected $unfulfillable;
 
     /**
-     * @var Collection List of installed migration
+     * @var \Illuminate\Support\Collection List of installed migration
      */
     protected $installed;
 
     /**
-     * @var Collection List of migration to install
+     * @var \Illuminate\Support\Collection List of migration to install
      */
     protected $pending;
 
     /**
-     * @var Bool True/false if the analyse method has been called
+     * @var bool True/false if the analyse method has been called
      */
     protected $analysed = false;
 

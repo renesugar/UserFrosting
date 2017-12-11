@@ -5,10 +5,10 @@
  * @link      https://github.com/userfrosting/UserFrosting
  * @license   https://github.com/userfrosting/UserFrosting/blob/master/licenses/UserFrosting.md (MIT License)
  */
-namespace UserFrosting\Sprinkle\Core\Database;
+namespace UserFrosting\Sprinkle\Core\Database\Migrator;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
-use UserFrosting\Sprinkle\Core\Database\MigrationRepositoryInterface;
+use UserFrosting\Sprinkle\Core\Database\Migrator\MigrationRepositoryInterface;
 
 /**
  * MigrationRepository Class
@@ -37,7 +37,7 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
     /**
      * Create a new database migration repository instance.
      *
-     * @param  \Illuminate\Database\ConnectionResolverInterface  $resolver
+     * @param  Capsule  $db
      * @param  string  $table
      * @return void
      */

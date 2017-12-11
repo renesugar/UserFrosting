@@ -5,12 +5,12 @@
  * @link      https://github.com/userfrosting/UserFrosting
  * @license   https://github.com/userfrosting/UserFrosting/blob/master/licenses/UserFrosting.md (MIT License)
  */
-namespace UserFrosting\Sprinkle\Core\Database;
+namespace UserFrosting\Sprinkle\Core\Database\Migrator;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use UserFrosting\System\Sprinkle\SprinkleManager;
-use UserFrosting\Sprinkle\Core\Database\MigrationLocatorInterface;
+use UserFrosting\Sprinkle\Core\Database\Migrator\MigrationLocatorInterface;
 
 /**
  * MigrationLocator Class
@@ -82,7 +82,6 @@ class MigrationLocator implements MigrationLocatorInterface
     /**
      * Returns the path of the Migration directory.
      *
-     * @access protected
      * @param string $sprinkleName
      * @return string The sprinkle Migration dir path
      */

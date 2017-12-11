@@ -5,10 +5,9 @@
  * @link      https://github.com/userfrosting/UserFrosting
  * @license   https://github.com/userfrosting/UserFrosting/blob/master/licenses/UserFrosting.md (MIT License)
  */
-namespace UserFrosting\Sprinkle\Core\Database;
+namespace UserFrosting\Sprinkle\Core\Database\Migrator;
 
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 use UserFrosting\System\Sprinkle\SprinkleManager;
 
 /**
