@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added `database` option for `migrate` and `migrate:*` Bakery commands
 - New `isProduction` method for Bakery command to test if app is in production mode
 - `migrate` and `migrate:*` Bakery command now require confirmation before execution when in production mode.
+- Added `migrate:status` Bakery command
 
 ### Changed
 - Moved `migrate` Bakery command and sub-commands to the `Core` sprinkle.

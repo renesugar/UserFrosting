@@ -111,7 +111,7 @@ class Migrator
      *    @param  array $ran The list of already ran migrations returned by the migration repository
      *    @return array The list of pending migrations, ie the available migrations not ran yet
      */
-    protected function pendingMigrations($available, $ran)
+    public function pendingMigrations($available, $ran)
     {
         return collect($available)->reject(function ($migration) use ($ran) {
             return collect($ran)->contains($migration);
