@@ -528,7 +528,7 @@ class ServicesProvider
 
             // Create appropriate handler based on config
             if ($config['session.handler'] == 'file') {
-                $fs = new FileSystem;
+                $fs = new Filesystem;
                 $handler = new FileSessionHandler($fs, $c->locator->findResource('session://'), $config['session.minutes']);
             } elseif ($config['session.handler'] == 'database') {
                 $connection = $c->db->connection();
