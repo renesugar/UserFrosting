@@ -82,9 +82,9 @@ class TestCase extends BaseTestCase
     {
         $uses = array_flip(class_uses_recursive(static::class));
 
-        /*if (isset($uses[DatabaseMigrations::class])) {
-            $this->runDatabaseMigrations();
-        }*/
+        if (isset($uses[WithTestDatabase::class])) {
+            $this->setupTestDatabase();
+        }
 
         if (isset($uses[DatabaseTransactions::class])) {
             $this->beginDatabaseTransaction();
@@ -226,7 +226,7 @@ class TestCase extends BaseTestCase
     protected function cloneObjectArray($original)
     {
         $cloned = [];
-        
+
         foreach ($original as $k => $v) {
             $cloned[$k] = clone $v;
         }

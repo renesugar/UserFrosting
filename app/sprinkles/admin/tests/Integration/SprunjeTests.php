@@ -2,13 +2,11 @@
 
 namespace UserFrosting\Tests\Integration;
 
-use Exception;
-use Illuminate\Database\Capsule\Manager as DB;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use UserFrosting\Sprinkle\Admin\Sprunje\UserPermissionSprunje;
 use UserFrosting\Sprinkle\Core\Util\ClassMapper;
 use UserFrosting\Tests\DatabaseTransactions;
 use UserFrosting\Tests\TestCase;
+use UserFrosting\Tests\WithTestDatabase;
 
 /**
  * Integration tests for the built-in Sprunje classes.
@@ -16,7 +14,11 @@ use UserFrosting\Tests\TestCase;
 class SprunjeTests extends TestCase
 {
     use DatabaseTransactions;
+    use WithTestDatabase;
 
+    /**
+     *    @var ClassMapper
+     */
     protected $classMapper;
 
     /**
@@ -29,9 +31,6 @@ class SprunjeTests extends TestCase
         parent::setUp();
 
         $this->classMapper = new ClassMapper();
-
-        // Use the test_integration for this test
-        $this->ci->db->getDatabaseManager()->setDefaultConnection('test_integration');
 
         // Setup the db
         $this->ci->migrator->run();

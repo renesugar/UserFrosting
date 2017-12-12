@@ -8,22 +8,20 @@
 namespace UserFrosting\Tests\Unit;
 
 use UserFrosting\Tests\TestCase;
+use UserFrosting\Tests\WithTestDatabase;
 
 /**
  * FactoriesTest class.
  * Tests the factories defined in this sprinkle are working
- *
- * @extends TestCase
  */
 class FactoriesTest extends TestCase
 {
+    use WithTestDatabase;
+
     public function setUp()
     {
         // Boot parent TestCase, which will set up the database and connections for us.
         parent::setUp();
-
-        // Use the test_integration for this test
-        $this->ci->db->getDatabaseManager()->setDefaultConnection('test_integration');
 
         // Setup the db
         $this->ci->migrator->run();
