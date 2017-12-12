@@ -456,7 +456,7 @@ class ServicesProvider
         $container['migrator'] = function ($c) {
             $migrator = new Migrator(
                 $c->db,
-                new DatabaseMigrationRepository($c->db, 'migrations'), //<- Put the table in a config \TODO
+                new DatabaseMigrationRepository($c->db, $c->config['migrations.repository_table']),
                 new MigrationLocator($c->sprinkleManager, new Filesystem)
             );
 
