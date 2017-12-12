@@ -86,6 +86,10 @@ class TestCase extends BaseTestCase
             $this->setupTestDatabase();
         }
 
+        if (isset($uses[RefreshDatabase::class])) {
+            $this->refreshDatabase();
+        }
+
         if (isset($uses[DatabaseTransactions::class])) {
             $this->beginDatabaseTransaction();
         }

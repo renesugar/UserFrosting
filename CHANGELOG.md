@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - New `isProduction` method for Bakery command to test if app is in production mode
 - `migrate` and `migrate:*` Bakery command now require confirmation before execution when in production mode.
 - Added `migrate:status` Bakery command
+- Added `RefreshDatabase` test Trait to use a fresh database for a test
+- Added `WithTestDatabase` test Trait to use the in memory database for a test
 
 ### Changed
 - Moved `migrate` Bakery command and sub-commands to the `Core` sprinkle.

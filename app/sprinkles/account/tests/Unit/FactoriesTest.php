@@ -9,6 +9,7 @@ namespace UserFrosting\Tests\Unit;
 
 use UserFrosting\Tests\TestCase;
 use UserFrosting\Tests\WithTestDatabase;
+use UserFrosting\Tests\RefreshDatabase;
 
 /**
  * FactoriesTest class.
@@ -17,15 +18,7 @@ use UserFrosting\Tests\WithTestDatabase;
 class FactoriesTest extends TestCase
 {
     use WithTestDatabase;
-
-    public function setUp()
-    {
-        // Boot parent TestCase, which will set up the database and connections for us.
-        parent::setUp();
-
-        // Setup the db
-        $this->ci->migrator->run();
-    }
+    use RefreshDatabase;
 
     function testUserFactory()
     {
