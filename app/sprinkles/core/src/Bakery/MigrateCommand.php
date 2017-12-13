@@ -35,7 +35,7 @@ class MigrateCommand extends BaseCommand
              ->addOption('pretend', 'p', InputOption::VALUE_NONE, 'Run migrations in "dry run" mode.')
              ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force the operation to run when in production.')
              ->addOption('database', 'd', InputOption::VALUE_REQUIRED, 'The database connection to use.')
-             ->addOption('step', 's', InputOption::VALUE_NONE, 'Force the migrations to be run so they can be rolled back individually.');
+             ->addOption('step', 's', InputOption::VALUE_NONE, 'Migrations will be run so they can be rolled back individually.');
     }
 
     /**
@@ -69,7 +69,7 @@ class MigrateCommand extends BaseCommand
      *    Setup migrator and the shared options between other command
      *
      *    @param  InputInterface $input
-     *    @return Migrator The migrator instance
+     *    @return \UserFrosting\Sprinkle\Core\Database\Migrator\Migrator The migrator instance
      */
     protected function setupMigrator(InputInterface $input)
     {
@@ -78,7 +78,7 @@ class MigrateCommand extends BaseCommand
             exit(1);
         }
 
-        /** @var UserFrosting\Sprinkle\Core\Database\Migrator */
+        /** @var \UserFrosting\Sprinkle\Core\Database\Migrator\Migrator */
         $migrator = $this->ci->migrator;
 
         // Set connection to the selected database

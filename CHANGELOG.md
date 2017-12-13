@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Removed the `io` property from migration classes.
 - Removed Bakery `projectRoot` property. Use the `\UserFrosting\ROOT_DIR` constant instead.
 - Removed `preted` option from Bakery `migrate:refresh` and `migrate:reset` commands.
+- Makes the `semantic versioning` part of a migration class optional. Migrations classes can now have the `UserFrosting\Sprinkle\{sprinkleName}\Database\Migrations` namespace, or any other sub-namespace.
 
 ### Fixed
 

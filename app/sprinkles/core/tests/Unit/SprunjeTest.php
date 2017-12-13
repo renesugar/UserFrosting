@@ -7,10 +7,8 @@
  */
 namespace UserFrosting\Tests\Unit;
 
-use Illuminate\Database\Capsule\Manager as DB;
 use Mockery as m;
 use UserFrosting\Tests\TestCase;
-use UserFrosting\Tests\DatabaseTransactions;
 use UserFrosting\Sprinkle\Core\Database\Builder as Builder;
 use UserFrosting\Sprinkle\Core\Database\Models\Model;
 use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
@@ -19,8 +17,6 @@ use UserFrosting\Sprinkle\Core\Util\ClassMapper;
 /**
  * SprunjeTest class.
  * Tests a basic Sprunje.
- *
- * @extends TestCase
  */
 class SprunjeTest extends TestCase
 {
