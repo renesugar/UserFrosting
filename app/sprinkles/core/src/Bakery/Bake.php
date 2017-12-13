@@ -27,7 +27,7 @@ class Bake extends BaseCommand
     protected $buildPath;
 
     /**
-     * @var String $ufArt The UserFrosting ASCII art.
+     * @var string $ufArt The UserFrosting ASCII art.
      */
     public $title = "
  _   _              ______             _   _

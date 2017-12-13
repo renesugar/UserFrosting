@@ -24,13 +24,13 @@ use Interop\Container\ContainerInterface;
 abstract class BaseCommand extends Command
 {
     /**
-     * @var @Symfony\Component\Console\Style\SymfonyStyle
-     * See http://symfony.com/doc/current/console/style.html
+     *    @var @Symfony\Component\Console\Style\SymfonyStyle
+     *    See http://symfony.com/doc/current/console/style.html
      */
     protected $io;
 
     /**
-     * @var ContainerInterface $ci The global container object, which holds all of UserFristing services.
+     *    @var ContainerInterface $ci The global container object, which holds all of UserFristing services.
      */
     protected $ci;
 
@@ -43,7 +43,9 @@ abstract class BaseCommand extends Command
     }
 
     /**
-     * Setup the global container object
+     *    Setup the global container object
+     *
+     *    @param ContainerInterface $ci
      */
     public function setContainer(ContainerInterface $ci)
     {
@@ -51,10 +53,9 @@ abstract class BaseCommand extends Command
     }
 
     /**
-     * Return if the app is in production mode
+     *    Return if the app is in production mode
      *
-     * @access protected
-     * @return bool
+     *    @return bool True/False if the app is in production mode
      */
     protected function isProduction()
     {

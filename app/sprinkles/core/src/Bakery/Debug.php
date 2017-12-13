@@ -64,7 +64,6 @@ class Debug extends BaseCommand
      * Check the minimum version of php.
      * This is done by composer itself, but we do it again for good mesure
      *
-     * @access public
      * @return void
      */
     protected function checkPhpVersion()
@@ -79,7 +78,6 @@ class Debug extends BaseCommand
     /**
      * Check the minimum version requirement of Node installed
      *
-     * @access public
      * @return void
      */
     protected function checkNodeVersion()
@@ -96,7 +94,6 @@ class Debug extends BaseCommand
     /**
      * Check the minimum version requirement for Npm
      *
-     * @access public
      * @return void
      */
     protected function checkNpmVersion()
@@ -114,7 +111,6 @@ class Debug extends BaseCommand
      * List all sprinkles defined in the `sprinkles.json` file,
      * making sure this file exist at the same time
      *
-     * @access protected
      * @return void
      */
     protected function listSprinkles()
@@ -142,7 +138,6 @@ class Debug extends BaseCommand
      * Check the database connexion and setup the `.env` file if we can't
      * connect and there's no one found.
      *
-     * @access protected
      * @return void
      */
     protected function checkDatabase()
@@ -163,7 +158,6 @@ class Debug extends BaseCommand
     /**
      * Display database config as for debug purposes
      *
-     * @access protected
      * @return void
      */
     protected function showConfig()

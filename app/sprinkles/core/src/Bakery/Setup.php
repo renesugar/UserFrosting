@@ -23,7 +23,7 @@ use UserFrosting\System\Bakery\BaseCommand;
 class Setup extends BaseCommand
 {
     /**
-     * envfile path
+     * @var string Path to the .env file
      */
     protected $envPath = \UserFrosting\APP_DIR. '/.env';
 
@@ -72,7 +72,6 @@ class Setup extends BaseCommand
     /**
      * Setup the `.env` file.
      *
-     * @access public
      * @return void
      */
     public function setupEnv()
@@ -112,7 +111,7 @@ class Setup extends BaseCommand
                 // Use custom validator to accept empty password
                 return $password;
             });
-    
+
             $dbParams = [
                 'driver' => $driverName,
                 'host' => $host,
@@ -188,7 +187,6 @@ class Setup extends BaseCommand
     /**
      * Return the database choices for the env setup.
      *
-     * @access protected
      * @return void
      */
     protected function databaseDrivers()

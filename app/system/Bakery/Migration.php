@@ -9,28 +9,27 @@ namespace UserFrosting\System\Bakery;
 
 use Illuminate\Database\Schema\Builder;
 use UserFrosting\Sprinkle\Core\Database\Migration as NewMigration;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use UserFrosting\Sprinkle\Core\Facades\Debug;
 
 /**
  * Abstract Migration class.
  *
- * @abstract
  * @deprecated since 4.2.0 Use `UserFrosting\Sprinkle\Core\Database\Migration` instead
  * @author Alex Weissman (https://alexanderweissman.com)
  */
-class Migration extends newMigration
+class Migration extends NewMigration
 {
-     /**
-      * __construct function.
-      *
-      * @access public
-      * @param Illuminate\Database\Schema\Builder $schema
-      * @return void
-      */
-     public function __construct(Builder $schema = null, SymfonyStyle $io = null)
-     {
-         Debug::debug("`UserFrosting\System\Bakery\Migration` has been deprecated and will be removed in future versions.  Please have your `" . static::class . "` migration extend the base `UserFrosting\Sprinkle\Core\Database\Migration` class instead.");
+    /**
+     *    Constructor
+     *
+     *    @param Builder $schema The schema builder
+     *    @param SymfonyStyle $io The SymfonyStyle instance
+     */
+    public function __construct(Builder $schema = null, SymfonyStyle $io = null)
+    {
+        Debug::debug("`UserFrosting\System\Bakery\Migration` has been deprecated and will be removed in future versions.  Please have your `" . static::class . "` migration extend the base `UserFrosting\Sprinkle\Core\Database\Migration` class instead.");
 
-         parent::__construct($schema);
-     }
+        parent::__construct($schema);
+    }
 }
