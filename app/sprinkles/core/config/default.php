@@ -95,7 +95,7 @@
             ]
         ],
         'migrations' => [
-            'repository_table' => 'migration'
+            'repository_table' => 'migrations'
         ],
         // Filesystem paths
         'path'    => [
