@@ -5,11 +5,11 @@
  * @link      https://github.com/userfrosting/UserFrosting
  * @license   https://github.com/userfrosting/UserFrosting/blob/master/licenses/UserFrosting.md (MIT License)
  */
-namespace UserFrosting\Tests;
+namespace UserFrosting\Sprinkle\Core\Tests;
 
 /**
  * Trait enabling wrapping of each test case in a database transaction
- * Based on Laravel `DatabaseTransactions` Traits
+ * Based on Laravel `RefreshDatabase` Traits
  *
  * @author Louis Charette
  */
@@ -77,7 +77,7 @@ trait RefreshDatabase
      *
      * @return void
      */
-    public function beginDatabaseTransaction()
+    protected function beginDatabaseTransaction()
     {
         $database = $this->ci->db;
 

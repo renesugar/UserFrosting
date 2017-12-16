@@ -8,14 +8,26 @@
 namespace UserFrosting\Tests\Unit;
 
 use UserFrosting\Tests\TestCase;
-use UserFrosting\Tests\WithTestDatabase;
+use UserFrosting\Sprinkle\Core\Tests\TestDatabase;
 
-class WithTestDatabaseTraitTest extends TestCase
+class TestDatabaseTraitTest extends TestCase
 {
-    use WithTestDatabase;
+    use TestDatabase;
 
     /**
-     *    Test the WithTestDatabase traits works
+     * Setup TestDatabase
+     */
+    public function setUp()
+    {
+        // Boot parent TestCase, which will set up the database and connections for us.
+        parent::setUp();
+
+        // Setup test database
+        $this->setupTestDatabase();
+    }
+
+    /**
+     *    Test the TestDatabase traits works
      */
     public function testTrait()
     {

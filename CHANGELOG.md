@@ -15,22 +15,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `migrate` and `migrate:*` Bakery command now require confirmation before execution when in production mode.
 - Added `migrate:status` Bakery command
 - Added `RefreshDatabase` test Trait to use a fresh database for a test
-- Added `WithTestDatabase` test Trait to use the in memory database for a test
+- Added `TestDatabase` test Trait to use the in memory database for a test
 
 ### Changed
 - Moved `migrate` Bakery command and sub-commands to the `Core` sprinkle.
-- Re-written Migrator. The migrator is now detached from the console and Bakery. The migrator is now included in the ServicesProvider and included in the `Core` sprinkle.
+- Re-written Migrator. The migrator is now detached from the console and Bakery. The migrator is now included in the ServicesProvider and included in the `Core` sprinkle. (#795)
+- Makes the `semantic versioning` part of a migration class optional. Migrations classes can now have the `UserFrosting\Sprinkle\{sprinkleName}\Database\Migrations` namespace, or any other sub-namespace.
 
 ### Deprecated
 - Migrations should now extends `UserFrosting\Sprinkle\Core\Database\Migration` instead of `UserFrosting\System\Bakery\Migration`.
 - Migrations dependencies property should now be a static property.
+- Trait `\UserFrosting\Tests\DatabaseTransactions` has been deprecated. Tests should now use the `\UserFrosting\Sprinkle\Core\Tests\DatabaseTransactions` trait instead. (#826)
 
 ### Removed
 - The console IO instance is not available anymore in migrations.
 - Removed the `io` property from migration classes.
 - Removed Bakery `projectRoot` property. Use the `\UserFrosting\ROOT_DIR` constant instead.
 - Removed `preted` option from Bakery `migrate:refresh` and `migrate:reset` commands.
-- Makes the `semantic versioning` part of a migration class optional. Migrations classes can now have the `UserFrosting\Sprinkle\{sprinkleName}\Database\Migrations` namespace, or any other sub-namespace.
 
 ### Fixed
 

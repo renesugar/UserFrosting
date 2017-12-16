@@ -5,15 +5,15 @@ namespace UserFrosting\Tests\Integration;
 use UserFrosting\Sprinkle\Admin\Sprunje\UserPermissionSprunje;
 use UserFrosting\Sprinkle\Core\Util\ClassMapper;
 use UserFrosting\Tests\TestCase;
-use UserFrosting\Tests\WithTestDatabase;
-use UserFrosting\Tests\RefreshDatabase;
+use UserFrosting\Sprinkle\Core\Tests\TestDatabase;
+use UserFrosting\Sprinkle\Core\Tests\RefreshDatabase;
 
 /**
  * Integration tests for the built-in Sprunje classes.
  */
 class SprunjeTests extends TestCase
 {
-    use WithTestDatabase;
+    use TestDatabase;
     use RefreshDatabase;
 
     /**
@@ -31,6 +31,10 @@ class SprunjeTests extends TestCase
         parent::setUp();
 
         $this->classMapper = new ClassMapper();
+
+        // Setup test database
+        $this->setupTestDatabase();
+        $this->refreshDatabase();
     }
 
     /**

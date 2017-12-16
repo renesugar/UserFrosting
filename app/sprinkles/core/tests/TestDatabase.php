@@ -5,14 +5,14 @@
  * @link      https://github.com/userfrosting/UserFrosting
  * @license   https://github.com/userfrosting/UserFrosting/blob/master/licenses/UserFrosting.md (MIT License)
  */
-namespace UserFrosting\Tests;
+namespace UserFrosting\Sprinkle\Core\Tests;
 
 /**
  * Trait used to run test against the `test_integration` db connection
  *
  * @author Louis Charette
  */
-trait WithTestDatabase
+trait TestDatabase
 {
     /**
      *    Define the test_integration database connection the default one

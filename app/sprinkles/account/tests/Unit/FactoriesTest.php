@@ -8,8 +8,8 @@
 namespace UserFrosting\Tests\Unit;
 
 use UserFrosting\Tests\TestCase;
-use UserFrosting\Tests\WithTestDatabase;
-use UserFrosting\Tests\RefreshDatabase;
+use UserFrosting\Sprinkle\Core\Tests\TestDatabase;
+use UserFrosting\Sprinkle\Core\Tests\RefreshDatabase;
 
 /**
  * FactoriesTest class.
@@ -17,8 +17,21 @@ use UserFrosting\Tests\RefreshDatabase;
  */
 class FactoriesTest extends TestCase
 {
-    use WithTestDatabase;
+    use TestDatabase;
     use RefreshDatabase;
+
+    /**
+     * Setup TestDatabase
+     */
+    public function setUp()
+    {
+        // Boot parent TestCase, which will set up the database and connections for us.
+        parent::setUp();
+
+        // Setup test database
+        $this->setupTestDatabase();
+        $this->refreshDatabase();
+    }
 
     function testUserFactory()
     {
