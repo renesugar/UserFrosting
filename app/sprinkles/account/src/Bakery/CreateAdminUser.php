@@ -10,8 +10,6 @@ namespace UserFrosting\Sprinkle\Account\Bakery;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use UserFrosting\System\Bakery\BaseCommand;
 use UserFrosting\System\Bakery\DatabaseTest;
 use UserFrosting\System\Database\Model\Migrations;
@@ -65,8 +63,8 @@ class CreateAdminUser extends BaseCommand
 
         // Need migration table
         if (!Capsule::schema()->hasColumn('migrations', 'id')) {
-                $this->io->error("Migrations doesn't appear to have been run! Make sure the database is properly migrated by using the `php bakery migrate` command.");
-                exit(1);
+            $this->io->error("Migrations doesn't appear to have been run! Make sure the database is properly migrated by using the `php bakery migrate` command.");
+            exit(1);
         }
 
         // Make sure the required mirgations have been run
@@ -80,11 +78,8 @@ class CreateAdminUser extends BaseCommand
         // Make sure that there are no users currently in the user table
         // We setup the root account here so it can be done independent of the version check
         if (User::count() > 0) {
-
             $this->io->note("Table 'users' is not empty. Skipping root account setup. To set up the root account again, please truncate or drop the table and try again.");
-
         } else {
-
             $this->io->writeln("Please answer the following questions to create the root account:\n");
 
             // Get the account details
@@ -125,7 +120,6 @@ class CreateAdminUser extends BaseCommand
     /**
      * Ask for the username
      *
-     * @access protected
      * @return void
      */
     protected function askUsername()
@@ -139,7 +133,6 @@ class CreateAdminUser extends BaseCommand
     /**
      * Validate the username.
      *
-     * @access protected
      * @param mixed $userName
      * @return void
      */
@@ -169,7 +162,6 @@ class CreateAdminUser extends BaseCommand
     /**
      * Ask for the email
      *
-     * @access protected
      * @return void
      */
     protected function askEmail()
@@ -183,7 +175,6 @@ class CreateAdminUser extends BaseCommand
     /**
      * Validate the email.
      *
-     * @access protected
      * @param mixed $email
      * @return void
      */
@@ -207,7 +198,6 @@ class CreateAdminUser extends BaseCommand
     /**
      * Ask for the first name
      *
-     * @access protected
      * @return void
      */
     protected function askFirstName()
@@ -221,8 +211,7 @@ class CreateAdminUser extends BaseCommand
     /**
      * validateFirstName function.
      *
-     * @access protected
-     * @param mixed $name
+     * @param string $firstName
      * @return void
      */
     protected function validateFirstName($firstName)
@@ -239,7 +228,6 @@ class CreateAdminUser extends BaseCommand
     /**
      * Ask for the last name
      *
-     * @access protected
      * @return void
      */
     protected function askLastName()
@@ -253,7 +241,6 @@ class CreateAdminUser extends BaseCommand
     /**
      * validateLastName function.
      *
-     * @access protected
      * @param mixed $lastName
      * @return void
      */
@@ -271,7 +258,6 @@ class CreateAdminUser extends BaseCommand
     /**
      * Ask for the password
      *
-     * @access protected
      * @return void
      */
     protected function askPassword()
@@ -285,7 +271,6 @@ class CreateAdminUser extends BaseCommand
     /**
      * validatePassword function.
      *
-     * @access protected
      * @param mixed $password
      * @return void
      */
@@ -302,7 +287,6 @@ class CreateAdminUser extends BaseCommand
     /**
      * confirmPassword function.
      *
-     * @access protected
      * @param mixed $passwordToConfirm
      * @return void
      */
@@ -317,7 +301,6 @@ class CreateAdminUser extends BaseCommand
     /**
      * validatePasswordConfirmation function.
      *
-     * @access protected
      * @param mixed $password
      * @param mixed $passwordToConfirm
      * @return void
