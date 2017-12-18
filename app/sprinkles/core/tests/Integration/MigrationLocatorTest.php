@@ -7,9 +7,11 @@
  */
 namespace UserFrosting\Tests\Integration;
 
+use \SplFileInfo;
 use Mockery as m;
 use UserFrosting\Tests\TestCase;
 use UserFrosting\Sprinkle\Core\Database\Migrator\MigrationLocator;
+use Illuminate\Filesystem\Filesystem;
 
 class MigrationLocatorTest extends TestCase
 {
@@ -18,6 +20,9 @@ class MigrationLocatorTest extends TestCase
         m::close();
     }
 
+    /**
+     *    Make sure migrations can be returned for all sprinkles
+     */
     public function testGetMigrations()
     {
         // Simulate the SprinkleManager
@@ -34,19 +39,21 @@ class MigrationLocatorTest extends TestCase
 
         // When `MigrationLocator` will ask the filesystem for `glob` and `core` sprinkle,
         // filesystem will return fake test path.
-        $filesystem->shouldReceive('glob')->with(\UserFrosting\ROOT_DIR . "/app/sprinkles/core/src/Database/Migrations/*/*.php")->once()->andReturn([
-            \UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/one/CreateUsersTable.php',
-            \UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/one/CreatePasswordResetsTable.php',
-            \UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/two/CreateFlightsTable.php',
-            \UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/CreateMainTable.php'
+        $filesystem->shouldReceive('exists')->with(\UserFrosting\ROOT_DIR . "/app/sprinkles/core/src/Database/Migrations")->andReturn(true);
+        $filesystem->shouldReceive('allFiles')->with(\UserFrosting\ROOT_DIR . "/app/sprinkles/core/src/Database/Migrations")->once()->andReturn([
+            new SplFileInfo(\UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/one/CreateUsersTable.php'),
+            new SplFileInfo(\UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/one/CreatePasswordResetsTable.php'),
+            new SplFileInfo(\UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/two/CreateFlightsTable.php'),
+            new SplFileInfo(\UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/CreateMainTable.php')
         ]);
 
         // When `MigrationLocator` will also ask the filesystem the same thing, but for the `account` sprinkle
-        $filesystem->shouldReceive('glob')->with(\UserFrosting\ROOT_DIR . "/app/sprinkles/Account/src/Database/Migrations/*/*.php")->once()->andReturn([
-            \UserFrosting\ROOT_DIR . '/app/sprinkles/Account/src/Database/Migrations/one/CreateUsersTable.php',
-            \UserFrosting\ROOT_DIR . '/app/sprinkles/Account/src/Database/Migrations/one/CreatePasswordResetsTable.php',
-            \UserFrosting\ROOT_DIR . '/app/sprinkles/Account/src/Database/Migrations/two/CreateFlightsTable.php',
-            \UserFrosting\ROOT_DIR . '/app/sprinkles/Account/src/Database/Migrations/CreateMainTable.php'
+        $filesystem->shouldReceive('exists')->with(\UserFrosting\ROOT_DIR . "/app/sprinkles/Account/src/Database/Migrations")->andReturn(true);
+        $filesystem->shouldReceive('allFiles')->with(\UserFrosting\ROOT_DIR . "/app/sprinkles/Account/src/Database/Migrations")->once()->andReturn([
+            new SplFileInfo(\UserFrosting\ROOT_DIR . '/app/sprinkles/Account/src/Database/Migrations/one/CreateUsersTable.php'),
+            new SplFileInfo(\UserFrosting\ROOT_DIR . '/app/sprinkles/Account/src/Database/Migrations/one/CreatePasswordResetsTable.php'),
+            new SplFileInfo(\UserFrosting\ROOT_DIR . '/app/sprinkles/Account/src/Database/Migrations/two/CreateFlightsTable.php'),
+            new SplFileInfo(\UserFrosting\ROOT_DIR . '/app/sprinkles/Account/src/Database/Migrations/CreateMainTable.php')
         ]);
 
         // Create a new MigrationLocator instance with our simulated SprinkleManager and filesystem
@@ -70,6 +77,9 @@ class MigrationLocatorTest extends TestCase
         $this->assertEquals($expected, $results);
     }
 
+    /**
+     *    Make sure migrations can be returned for a specific sprinkle
+     */
     public function testGetMigrationsForSprinkle()
     {
         // Simulate the SprinkleManager
@@ -80,11 +90,12 @@ class MigrationLocatorTest extends TestCase
 
         // When `MigrationLocator` will ask the filesystem for `glob`, which it should do only once,
         // filesystem will return fake test path.
-        $filesystem->shouldReceive('glob')->with(\UserFrosting\ROOT_DIR . "/app/sprinkles/core/src/Database/Migrations/*/*.php")->once()->andReturn([
-            \UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/one/CreateUsersTable.php',
-            \UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/one/CreatePasswordResetsTable.php',
-            \UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/two/CreateFlightsTable.php',
-            \UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/CreateMainTable.php'
+        $filesystem->shouldReceive('exists')->with(\UserFrosting\ROOT_DIR . "/app/sprinkles/core/src/Database/Migrations")->andReturn(true);
+        $filesystem->shouldReceive('allFiles')->with(\UserFrosting\ROOT_DIR . "/app/sprinkles/core/src/Database/Migrations")->once()->andReturn([
+            new SplFileInfo(\UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/one/CreateUsersTable.php'),
+            new SplFileInfo(\UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/one/CreatePasswordResetsTable.php'),
+            new SplFileInfo(\UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/two/CreateFlightsTable.php'),
+            new SplFileInfo(\UserFrosting\ROOT_DIR . '/app/sprinkles/core/src/Database/Migrations/CreateMainTable.php')
         ]);
 
         // Create a new MigrationLocator instance with our simulated SprinkleManager and filesystem
@@ -102,5 +113,48 @@ class MigrationLocatorTest extends TestCase
 
         // Test results match expectations
         $this->assertEquals($expected, $results);
+    }
+
+    /**
+     *    Make sure no error is thrown if the Migration dir doesn't exist
+     */
+    public function testGetMigrationsForSprinkleWithNoMigrationDir()
+    {
+        // Simulate the SprinkleManager
+        $sprinkleManager = m::mock('UserFrosting\System\Sprinkle\SprinkleManager');
+
+        // Simulate the Filesystem.
+        $filesystem = m::mock('Illuminate\Filesystem\Filesystem');
+
+        // When `MigrationLocator` will ask the filesystem for `glob`, which it should do only once,
+        // filesystem will return fake test path.
+        $filesystem->shouldReceive('exists')->with(\UserFrosting\ROOT_DIR . "/app/sprinkles/core/src/Database/Migrations")->andReturn(false);
+        $filesystem->shouldNotReceive('allFiles');
+
+        // Create a new MigrationLocator instance with our simulated SprinkleManager and filesystem
+        // and ask to find core sprinkle migration files
+        $locator = new MigrationLocator($sprinkleManager, $filesystem);
+        $results = $locator->getMigrationsForSprinkle('core');
+
+        // Test results match expectations
+        $this->assertEquals([], $results);
+    }
+
+    /**
+     *    Test MigratonLocator against the real thing, no Mockery
+     */
+    function testActualInstance()
+    {
+        // Get sprinkle manager and make sure `core` is returned
+        $sprinkleManager = $this->ci->sprinkleManager;
+        $this->assertContains('core', $sprinkleManager->getSprinkleNames());
+
+        // Create a new MigrationLocator instance with our real SprinkleManager and filesystem
+        // and ask to find core sprinkle migration files
+        $locator = new MigrationLocator($sprinkleManager, new Filesystem);
+        $results = $locator->getMigrationsForSprinkle('core');
+
+        // Test results match expectations
+        $this->assertContains('\UserFrosting\Sprinkle\Core\Database\Migrations\v400\SessionsTable', $results);
     }
 }

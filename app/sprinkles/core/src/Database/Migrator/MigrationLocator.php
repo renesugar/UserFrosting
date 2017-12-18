@@ -53,7 +53,14 @@ class MigrationLocator implements MigrationLocatorInterface
     {
         // Get the sprinkle migration path and get all files in that path recursively
         $path = $this->migrationDirectoryPath($sprinkleName);
-        $files = $this->files->glob($path . "*/*.php");
+
+        // If directory diesn't exist, stop
+        if (!$this->files->exists($path)) {
+            return [];
+        }
+
+        // Get files
+        $files = $this->files->allFiles($path);
 
         // Transform the path into the mgiration full class name
         $migrations = collect($files)->transform(function ($file) use ($sprinkleName, $path) {
@@ -92,7 +99,7 @@ class MigrationLocator implements MigrationLocatorInterface
                $sprinkleName .
                \UserFrosting\DS .
                \UserFrosting\SRC_DIR_NAME .
-               "/Database/Migrations/";
+               "/Database/Migrations";
     }
 
     /**
@@ -115,6 +122,6 @@ class MigrationLocator implements MigrationLocatorInterface
         $className = str_replace('/', '\\', $className);
 
         // Build the class name and namespace
-        return "\\UserFrosting\\Sprinkle\\".$sprinkleName."\\Database\\Migrations\\" . $className;
+        return "\\UserFrosting\\Sprinkle\\".$sprinkleName."\\Database\\Migrations" . $className;
     }
 }
