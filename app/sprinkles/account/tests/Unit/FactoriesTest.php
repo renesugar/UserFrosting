@@ -5,7 +5,7 @@
  * @link      https://github.com/userfrosting/UserFrosting
  * @license   https://github.com/userfrosting/UserFrosting/blob/master/licenses/UserFrosting.md (MIT License)
  */
-namespace UserFrosting\Tests\Unit;
+namespace UserFrosting\Sprinkle\Account\Tests\Unit;
 
 use UserFrosting\Tests\TestCase;
 use UserFrosting\Sprinkle\Core\Tests\TestDatabase;
@@ -33,6 +33,10 @@ class FactoriesTest extends TestCase
         $this->refreshDatabase();
     }
 
+    /**
+     *    Test the user factory
+     *    @return void 
+     */
     function testUserFactory()
     {
         $fm = $this->ci->factory;
