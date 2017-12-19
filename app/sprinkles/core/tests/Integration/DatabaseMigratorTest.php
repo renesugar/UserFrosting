@@ -8,8 +8,14 @@
 namespace UserFrosting\Tests\Integration;
 
 use Mockery as m;
-use UserFrosting\Tests\TestCase;
+use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Database\Connection;
+use Illuminate\Database\Schema\Builder;
+use Illuminate\Database\Schema\Grammars\Grammar;
+use UserFrosting\Sprinkle\Core\Database\Migrator\DatabaseMigrationRepository;
 use UserFrosting\Sprinkle\Core\Database\Migrator\Migrator;
+use UserFrosting\Sprinkle\Core\Database\Migrator\MigrationLocator;
+use UserFrosting\Tests\TestCase;
 
 /**
  *    Tests for the Migrator Class
@@ -37,7 +43,7 @@ class DatabaseMigratorTest extends TestCase
     protected $migrator;
 
     /**
-     * @var MigrationLocator The migration locator instance.
+    * @var MigrationLocator The migration locator instance.
      */
     protected $locator;
 
@@ -45,6 +51,11 @@ class DatabaseMigratorTest extends TestCase
      * @var DatabaseMigrationRepository The migration repository instance.
      */
     protected $repository;
+
+    /**
+     * @var Connection
+     */
+    protected $connection;
 
     /**
      * Setup base mock and migrator instance.
@@ -57,15 +68,15 @@ class DatabaseMigratorTest extends TestCase
         parent::setUp();
 
         // Create mock objects
-        $this->schema = m::mock('Illuminate\Database\Schema\Builder');
-        $this->repository = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\DatabaseMigrationRepository');
-        $this->locator = m::mock('UserFrosting\Sprinkle\Core\Database\Migrator\MigrationLocator');
-        $capsule = m::mock('Illuminate\Database\Capsule\Manager');
-        $connectionMock = m::mock('Illuminate\Database\Connection');
+        $this->schema = m::mock(Builder::class);
+        $this->repository = m::mock(DatabaseMigrationRepository::class);
+        $this->locator = m::mock(MigrationLocator::class);
+        $capsule = m::mock(Capsule::class);
+        $this->connection = m::mock(Connection::class);
 
         // Set global expections for $capule and $connection
-        $capsule->shouldReceive('getConnection')->andReturn($connectionMock);
-        $connectionMock->shouldReceive('getSchemaBuilder')->andReturn($this->schema);
+        $capsule->shouldReceive('getConnection')->andReturn($this->connection);
+        $this->connection->shouldReceive('getSchemaBuilder')->andReturn($this->schema);
 
         // Setup the migrator instance
         $this->migrator = new Migrator($capsule, $this->repository, $this->locator);
@@ -109,6 +120,11 @@ class DatabaseMigratorTest extends TestCase
         // SchemaBuilder will create all 3 tables
         $this->schema->shouldReceive('create')->times(3)->andReturn(null);
 
+        // Connection will be asked for the SchemaGrammar
+        $grammar = m::mock(Grammar::class);
+        $this->connection->shouldReceive('getSchemaGrammar')->andReturn($grammar);
+        $grammar->shouldReceive('supportsSchemaTransactions')->andReturn(false);
+
         // Run migrations up
         $migrations = $this->migrator->run();
 
@@ -137,6 +153,11 @@ class DatabaseMigratorTest extends TestCase
 
         // SchemaBuilder will only create 2 tables
         $this->schema->shouldReceive('create')->times(2)->andReturn(null);
+
+        // Connection will be asked for the SchemaGrammar
+        $grammar = m::mock(Grammar::class);
+        $this->connection->shouldReceive('getSchemaGrammar')->andReturn($grammar);
+        $grammar->shouldReceive('supportsSchemaTransactions')->andReturn(false);
 
         // Run migrations up
         $migrations = $this->migrator->run();
@@ -220,6 +241,11 @@ class DatabaseMigratorTest extends TestCase
         // SchemaBuilder will only create 2 tables
         $this->schema->shouldReceive('dropIfExists')->times(3)->andReturn([]);
 
+        // Connection will be asked for the SchemaGrammar
+        $grammar = m::mock(Grammar::class);
+        $this->connection->shouldReceive('getSchemaGrammar')->andReturn($grammar);
+        $grammar->shouldReceive('supportsSchemaTransactions')->andReturn(false);
+
         // Run migrations up
         $migrations = $this->migrator->rollback();
 
@@ -246,6 +272,11 @@ class DatabaseMigratorTest extends TestCase
 
         // SchemaBuilder will only create 2 tables
         $this->schema->shouldReceive('dropIfExists')->times(1)->andReturn([]);
+
+        // Connection will be asked for the SchemaGrammar
+        $grammar = m::mock(Grammar::class);
+        $this->connection->shouldReceive('getSchemaGrammar')->andReturn($grammar);
+        $grammar->shouldReceive('supportsSchemaTransactions')->andReturn(false);
 
         // Run migrations up
         $migrations = $this->migrator->rollback();
@@ -277,6 +308,11 @@ class DatabaseMigratorTest extends TestCase
 
         // SchemaBuilder will only create 2 tables
         $this->schema->shouldReceive('dropIfExists')->times(3)->andReturn([]);
+
+        // Connection will be asked for the SchemaGrammar
+        $grammar = m::mock(Grammar::class);
+        $this->connection->shouldReceive('getSchemaGrammar')->andReturn($grammar);
+        $grammar->shouldReceive('supportsSchemaTransactions')->andReturn(false);
 
         // Run migrations up
         $migrations = $this->migrator->reset();
