@@ -38,7 +38,7 @@ trait ConfirmableTrait
             $this->io->warning($warning);
 
             // Ask confirmation
-            $confirmed = $this->io->confirm('Do you really wish to run this command?');
+            $confirmed = $this->io->confirm('Do you really wish to run this command?', false);
 
             if (! $confirmed) {
                 $this->io->comment('Command Cancelled!');
