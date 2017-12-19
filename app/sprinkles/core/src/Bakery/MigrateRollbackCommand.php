@@ -45,9 +45,17 @@ class MigrateRollbackCommand extends MigrateCommand
         $steps = $input->getOption('steps');
         $pretend = $input->getOption('pretend');
 
-        // Rollback migrations
+        // Get migrator
         $migrator = $this->setupMigrator($input);
-        $migrated = $migrator->rollback(['pretend' => $pretend, 'steps' => $steps]);
+
+        // Rollback migrations
+        try {
+            $migrated = $migrator->rollback(['pretend' => $pretend, 'steps' => $steps]);
+        } catch (\Exception $e) {
+            $this->io->writeln($migrator->getNotes());
+            $this->io->error($e->getMessage());
+            exit(1);
+        }
 
         // Get notes and display them
         $this->io->writeln($migrator->getNotes());

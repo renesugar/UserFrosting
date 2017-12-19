@@ -49,9 +49,17 @@ class MigrateCommand extends BaseCommand
         $pretend = $input->getOption('pretend');
         $step = $input->getOption('step');
 
-        // Run migration
+        // Get migrator
         $migrator = $this->setupMigrator($input);
-        $migrated = $migrator->run(['pretend' => $pretend, 'step' => $step]);
+
+        // Run migration
+        try {
+            $migrated = $migrator->run(['pretend' => $pretend, 'step' => $step]);
+        } catch (\Exception $e) {
+            $this->io->writeln($migrator->getNotes());
+            $this->io->error($e->getMessage());
+            exit(1);
+        }
 
         // Get notes and display them
         $this->io->writeln($migrator->getNotes());

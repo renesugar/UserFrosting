@@ -43,9 +43,17 @@ class MigrateResetCommand extends MigrateCommand
         // Get options
         $pretend = $input->getOption('pretend');
 
-        // Reset migrator
+        // Get migrator
         $migrator = $this->setupMigrator($input);
-        $resetted = $migrator->reset($pretend);
+
+        // Reset migrator
+        try {
+            $resetted = $migrator->reset($pretend);
+        } catch (\Exception $e) {
+            $this->io->writeln($migrator->getNotes());
+            $this->io->error($e->getMessage());
+            exit(1);
+        }
 
         // Get notes and display them
         $this->io->writeln($migrator->getNotes());

@@ -43,9 +43,19 @@ class MigrateRefreshCommand extends MigrateCommand
         // Get options
         $steps = $input->getOption('steps');
 
-        // Rollback migration
+        // Get migrator
         $migrator = $this->setupMigrator($input);
-        $rolledback = $migrator->rollback(['pretend' => false, 'steps' => $steps]);
+
+        // Rollback migration
+        try {
+            $rolledback = $migrator->rollback(['pretend' => false, 'steps' => $steps]);
+        } catch (\Exception $e) {
+            $this->io->writeln($migrator->getNotes());
+            $this->io->error($e->getMessage());
+            exit(1);
+        }
+
+        // Get notes and display them
         $this->io->writeln($migrator->getNotes());
 
         // Stop if nothing was rolledback
