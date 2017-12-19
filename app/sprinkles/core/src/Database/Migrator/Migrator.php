@@ -325,6 +325,7 @@ class Migrator
 
     /**
      *    Run a migration inside a transaction if the database supports it.
+     *    Note : As of Laravel 5.4, only PostgresGrammar supports it
      *
      *    @param  object $migration The migration instance
      *    @param  string $method The method used [up, down]
@@ -332,20 +333,18 @@ class Migrator
      */
     protected function runMigration($migration, $method)
     {
-        /*$connection = $this->resolveConnection(
-            $migration->getConnection()
-        );*/
-        //!TODO : See if this can be done.
-
-        //$callback = function () use ($migration, $method) {
+        $callback = function () use ($migration, $method) {
             if (method_exists($migration, $method)) {
                 $migration->{$method}();
             }
-        //};
+        };
 
-        /*$this->getSchemaGrammar($connection)->supportsSchemaTransactions()
-                    ? $connection->transaction($callback)
-                    : $callback();*/
+        if ($this->getSchemaGrammar()->supportsSchemaTransactions()) {
+            $this->getConnection()->transaction($callback);
+        } else {
+            $callback();
+        }
+
     }
 
     /**
@@ -488,6 +487,15 @@ class Migrator
     {
         $this->repository->setSource($name);
         $this->connection = $name;
+    }
+
+    /**
+     *    Get instance of Grammar
+     *    @return \Illuminate\Database\Schema\Grammars\Grammar
+     */
+    protected function getSchemaGrammar()
+    {
+        return $this->getConnection()->getSchemaGrammar();
     }
 
     /**
