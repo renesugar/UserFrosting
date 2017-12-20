@@ -108,15 +108,15 @@ class Debug extends BaseCommand
     }
 
     /**
-     * List all sprinkles defined in the `sprinkles.json` file,
+     * List all sprinkles defined in the Sprinkles schema file,
      * making sure this file exist at the same time
      *
      * @return void
      */
     protected function listSprinkles()
     {
-        // Check for `sprinkles.json`
-        $path = \UserFrosting\APP_DIR . '/sprinkles.json';
+        // Check for Sprinkles schema file
+        $path = \UserFrosting\SPRINKLES_SCHEMA_FILE;
         $sprinklesFile = @file_get_contents($path);
         if ($sprinklesFile === false) {
             $this->io->error("The file `$path` not found.");
