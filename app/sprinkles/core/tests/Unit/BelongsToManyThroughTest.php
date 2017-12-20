@@ -7,6 +7,7 @@
  */
 namespace UserFrosting\Tests\Unit;
 
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Mockery as m;
 use UserFrosting\Tests\TestCase;
