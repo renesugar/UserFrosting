@@ -13,9 +13,9 @@ class UnfulfillableTable extends Migration
      /**
       * {@inheritDoc}
       */
-     public $dependencies = [
-         '\UserFrosting\Tests\Integration\Migrations\NonExistingMigration'
-     ];
+    static public $dependencies = [
+        '\UserFrosting\Tests\Integration\Migrations\NonExistingMigration'
+    ];
 
     /**
      * Run the migrations.
@@ -24,7 +24,7 @@ class UnfulfillableTable extends Migration
      */
     public function up()
     {
-        $this->schema->create('unfulfillable', function ($table) {
+        $this->schema->create('unfulfillable', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
         });

@@ -119,13 +119,6 @@ class Migrator
     }
 
     /**
-     * Run an array of migrations.
-     *
-     * @param  array  $migrations
-     * @param  array  $options
-     * @return void
-     */
-    /**
      *    Run an array of migrations.
      *
      *    @param  array $migrations An array of migrations classes names to be run (unsorted, unvalidated)
@@ -188,13 +181,6 @@ class Migrator
         $this->note("<info>Migrated:</info>  {$migrationClass}");
     }
 
-    /**
-     * Rollback the last migration operation.
-     *
-     * @param  array|string $paths
-     * @param  array  $options
-     * @return array
-     */
     /**
      *    Rollback the last migration operation.
      *

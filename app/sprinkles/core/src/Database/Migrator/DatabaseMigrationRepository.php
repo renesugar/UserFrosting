@@ -8,6 +8,7 @@
 namespace UserFrosting\Sprinkle\Core\Database\Migrator;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Database\Schema\Blueprint;
 use UserFrosting\Sprinkle\Core\Database\Migrator\MigrationRepositoryInterface;
 
 /**
@@ -136,7 +137,7 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
      */
     public function createRepository()
     {
-        $this->getSchemaBuilder()->create($this->table, function ($table) {
+        $this->getSchemaBuilder()->create($this->table, function (Blueprint $table) {
             // The migrations table is responsible for keeping track of which of the
             // migrations have actually run for the application. We'll create the
             // table to hold the migration file's path as well as the batch ID.

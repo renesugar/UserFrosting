@@ -22,7 +22,7 @@ class CreateFlightsTable extends Migration
      */
     public function up()
     {
-        $this->schema->create('flights', function ($table) {
+        $this->schema->create('flights', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
         });
