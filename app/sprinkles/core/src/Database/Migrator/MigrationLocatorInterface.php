@@ -7,9 +7,6 @@
  */
 namespace UserFrosting\Sprinkle\Core\Database\Migrator;
 
-use Illuminate\Filesystem\Filesystem;
-use UserFrosting\System\Sprinkle\SprinkleManager;
-
 /**
  * MigrationLocatorInterface
  *
@@ -19,14 +16,6 @@ use UserFrosting\System\Sprinkle\SprinkleManager;
  */
 interface MigrationLocatorInterface
 {
-    /**
-     *    Class Constructor
-     *
-     *    @param  SprinkleManager $sprinkleManager The sprinkle manager services
-     *    @param  Filesystem $files The filesystem instance
-     */
-    public function __construct(SprinkleManager $sprinkleManager, Filesystem $files);
-
     /**
      *    Returm a list of all available migration available for a specific sprinkle
      *
