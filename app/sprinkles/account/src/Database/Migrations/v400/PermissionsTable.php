@@ -10,7 +10,7 @@ namespace UserFrosting\Sprinkle\Account\Database\Migrations\v400;
 use Illuminate\Database\Schema\Blueprint;
 use UserFrosting\Sprinkle\Account\Database\Models\Permission;
 use UserFrosting\Sprinkle\Account\Database\Models\Role;
-use UserFrosting\System\Bakery\Migration;
+use UserFrosting\Sprinkle\Core\Database\Migration;
 
 /**
  * Permissions table migration
